@@ -48,7 +48,7 @@ The pattern for this could be:
 
 More about [grok][4]
 
-[3]: https://github.com/elastic/logstash/blob/v1.4.2/patterns/grok-patterns
+[3]: https://raw.githubusercontent.com/logstash-plugins/logstash-patterns-core/master/patterns/grok-patterns
 [4]: https://www.elastic.co/guide/en/logstash/current/plugins-filters-grok.html
 # How to use
 
