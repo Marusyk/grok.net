@@ -1,4 +1,8 @@
-﻿# grok.net
+﻿<p align="center">
+  <img src="Grok.png" alt="Grok" width="250"/>
+</p>
+
+# grok.net
 Cross platform .NET grok implementation as a NuGet package
 
  [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE.md) ![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)
