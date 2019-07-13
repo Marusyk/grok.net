@@ -2,11 +2,11 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <PackageId>BinaryTree</PackageId>
+    <PackageId>grok.net</PackageId>
     <Authors>RMarusyk</Authors>
     <Description>Cross platform .NET grok implementation</Description>
     <PackageLicenseUrl>https://github.com/Marusyk/grok.net/blob/master/LICENSE</PackageLicenseUrl>
-    <!-- <PackageIconUrl>https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcS_N3p8bFpmy0AyoBl_3n3XwSVlnjfnPzLduqRlCI-sS19C810kSQ</PackageIconUrl> -->
+    <PackageIconUrl>https://raw.githubusercontent.com/Marusyk/grok.net/master/Grok.png</PackageIconUrl>
     <PackageProjectUrl>https://github.com/Marusyk/grok.net</PackageProjectUrl>
     <PackageTags>grok;grok-parser;grok-patterns;grokking;c-sharp-library</PackageTags>
   </PropertyGroup>
