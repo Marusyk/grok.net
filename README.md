@@ -52,7 +52,28 @@ More about [grok][4]
 [4]: https://www.elastic.co/guide/en/logstash/current/plugins-filters-grok.html
 # How to use
 
-TBA
+Create a new instanse with grok pattern:
+
+```csharp
+Grok grok = new Grok("%{MONTHDAY:month}-%{MONTHDAY:day}-%{MONTHDAY:year} %{TIME:timestamp};%{WORD:id};%{LOGLEVEL:loglevel};%{WORD:func};%{GREEDYDATA:msg}");
+```
+
+then prepare some logs to parse
+
+```csharp
+string logs = @"06-21-19 21:00:13:589241;15;INFO;main;DECODED: 775233900043 DECODED BY: 18500738 DISTANCE: 1.5165
+               06-21-19 21:00:13:589265;156;WARN;main;DECODED: 775233900043 EMPTY DISTANCE: --------";
+```
+
+You are ready to parse and print result
+
+```csharp
+var grokResult = grok.Parse(logs);
+foreach (var item in grokResult)
+{
+  Console.WriteLine($"{item.Key} : {item.Value}");
+}
+```
 
  ## Contributing
 
