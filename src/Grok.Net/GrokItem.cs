@@ -1,4 +1,4 @@
-﻿namespace Grok.Net
+﻿namespace GrokNet
 {
     public sealed class GrokItem
     {

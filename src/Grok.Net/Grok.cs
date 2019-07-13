@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace Grok.Net
+namespace GrokNet
 {
     public class Grok
     {

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-namespace Grok.Net
+namespace GrokNet
 {
     public sealed class GrokResult : ReadOnlyCollection<GrokItem>
     {
