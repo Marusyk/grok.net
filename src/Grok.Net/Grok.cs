@@ -150,28 +150,25 @@ namespace GrokNet
             Group group1 = match.Groups[2];
             Group group2 = match.Groups[1];
 
-            string str = string.Empty;
-
-            if (_patterns.ContainsKey(group2.Value))
+            if (_patterns.TryGetValue(group2.Value, out var str))
             {
-                str = _patterns[group2.Value];
+                return $"(?<{group1}>{str})";
             }
 
-            return $"(?<{(object)group1}>{(object)str})";
+            return $"(?<{group1}>)";
         }
 
         private string ReplaceWithoutName(Match match)
         {
             Group group = match.Groups[1];
 
-            string str = string.Empty;
-
-            if (_patterns.ContainsKey(group.Value))
+            if (_patterns.TryGetValue(group.Value, out var str))
             {
                 str = _patterns[group.Value];
+                return $"({str})";
             }
 
-            return $"({(object)str})";
+            return "()";
         }
     }
 }
