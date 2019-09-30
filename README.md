@@ -82,6 +82,18 @@ foreach (var item in grokResult)
 }
 ```
 
+## Build
+
+On Windows: 
+```powershell
+build.ps1
+```
+
+On Linux/Mac:
+```bash
+build.sh
+```
+
  ## Contributing
 
 Please read [CONTRIBUTING.md](https://github.com/Marusyk/grok.net/blob/master/CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
