@@ -1,40 +1,29 @@
-#tool nuget:?package=NUnit.ConsoleRunner&version=3.4.0
-
 var target = Argument("target", "Default");
 var configuration = Argument("configuration", "Release");
 
-
-var buildDir = Directory($"./build/{configuration}/");
-var solutionFile = "./src/Grok.Net.sln";
-var outputNupkg = $"./src/Grok.Net/bin/{configuration}/*.nupkg";
+var artifactsDir = "./artifacts/";
+var projectFile = "./src/Grok.Net/Grok.Net.csproj";
+var binDir = "./src/Grok.Net/bin/";
+var objDir = "./src/Grok.Net/obj/";
 
 Task("Clean")
     .Does(() =>
 {
-    CleanDirectory(buildDir);
+    CleanDirectories(new[]{ artifactsDir, binDir, objDir });
 });
 
 Task("Restore-NuGet-Packages")
     .IsDependentOn("Clean")
     .Does(() =>
 {
-    NuGetRestore(solutionFile);
+    DotNetCoreRestore(projectFile);
 });
 
 Task("Build")
     .IsDependentOn("Restore-NuGet-Packages")
     .Does(() =>
 {
-    if(IsRunningOnWindows())
-    {
-      MSBuild(solutionFile, settings =>
-        settings.SetConfiguration(configuration));
-    }
-    else
-    {
-      XBuild(solutionFile, settings =>
-        settings.SetConfiguration(configuration));
-    }
+    DotNetCoreBuild(projectFile, new DotNetCoreBuildSettings(){ Configuration = configuration });
 });
 
 Task("Run-Unit-Tests")
@@ -42,19 +31,20 @@ Task("Run-Unit-Tests")
     .Does(() =>
 {
     // No unit tests yet!
-    //NUnit3("./src/**/bin/" + configuration + "/*.Tests.dll", new NUnit3Settings {
-    //    NoResults = true
-    //    });
 });
 
-Task("Copy-Output")
+Task("NuGet-Pack")
     .IsDependentOn("Run-Unit-Tests")
     .Does(() =>
 {
-    CopyFiles(outputNupkg, buildDir);
+    DotNetCorePack(projectFile, new DotNetCorePackSettings()
+    {
+        Configuration = configuration,
+        OutputDirectory = artifactsDir
+    });
 });
 
 Task("Default")
-    .IsDependentOn("Copy-Output");
+    .IsDependentOn("NuGet-Pack");
 
 RunTarget(target);
