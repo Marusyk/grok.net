@@ -3,13 +3,16 @@ var configuration = Argument("configuration", "Release");
 
 var artifactsDir = "./artifacts/";
 var projectFile = "./src/Grok.Net/Grok.Net.csproj";
-var binDir = "./src/Grok.Net/bin/";
-var objDir = "./src/Grok.Net/obj/";
 
 Task("Clean")
     .Does(() =>
 {
-    CleanDirectories(new[]{ artifactsDir, binDir, objDir });
+    CleanDirectory(artifactsDir);
+
+    if(BuildSystem.IsLocalBuild)
+    {
+        CleanDirectories(GetDirectories("./**/obj") + GetDirectories("./**/bin"));
+    }
 });
 
 Task("Restore-NuGet-Packages")
@@ -23,7 +26,11 @@ Task("Build")
     .IsDependentOn("Restore-NuGet-Packages")
     .Does(() =>
 {
-    DotNetCoreBuild(projectFile, new DotNetCoreBuildSettings(){ Configuration = configuration });
+    DotNetCoreBuild(projectFile, new DotNetCoreBuildSettings()
+    { 
+        Configuration = configuration,
+        NoRestore = true
+    });
 });
 
 Task("Run-Unit-Tests")
@@ -40,6 +47,8 @@ Task("NuGet-Pack")
     DotNetCorePack(projectFile, new DotNetCorePackSettings()
     {
         Configuration = configuration,
+        NoRestore = true,
+        NoBuild = true,
         OutputDirectory = artifactsDir
     });
 });
