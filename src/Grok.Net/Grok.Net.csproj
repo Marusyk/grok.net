@@ -15,7 +15,7 @@
 
   <PropertyGroup>
     <Version>1.0.1</Version>
-  </PropertyGroup>
+</PropertyGroup>
 
   <ItemGroup>
     <None Remove="grok-patterns" />
