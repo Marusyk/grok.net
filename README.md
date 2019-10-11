@@ -96,7 +96,9 @@ build.sh
 
  ## Contributing
 
-Please read [CONTRIBUTING.md](https://github.com/Marusyk/grok.net/blob/master/CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
+Would you like to help make grok.net even better? We keep a list of issues that are approachable for newcomers under the [good-first-issue](https://github.com/Marusyk/grok.net/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22) label.
+
+Also. please read [CONTRIBUTING.md](https://github.com/Marusyk/grok.net/blob/master/CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
 
 ## License
 
