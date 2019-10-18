@@ -58,3 +58,4 @@ src/BenchmarkDotNet.Core/Disassemblers/*
 tools/**
 !tools/packages.config
 .dotnet
+.vscode/
