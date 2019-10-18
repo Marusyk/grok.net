@@ -73,11 +73,11 @@ namespace GrokNetTests
         public void EmailPatternTest()
         {
             Grok act = new Grok("%{EMAILADDRESS:email}:%{GREEDYDATA:comment}");
-            string logs = @":Free as in Free Beer";
+            string logs = @"Bob.Davis@microsoft.com:Free as in Free Beer";
             
             GrokResult grokResult = act.Parse(logs);
            
-            Assert.Equal("", grokResult[0].Value);
+            Assert.Equal("Bob.Davis@microsoft.com", grokResult[0].Value);
             Assert.Equal("Free as in Free Beer", grokResult[1].Value);
             Assert.Equal("email", grokResult[0].Key);
             Assert.Equal("comment", grokResult[1].Key);
