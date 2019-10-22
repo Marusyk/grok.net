@@ -81,7 +81,21 @@ namespace GrokNetTests
             Assert.Equal("Free as in Free Beer", grokResult[1].Value);
             Assert.Equal("email", grokResult[0].Key);
             Assert.Equal("comment", grokResult[1].Key);
-
         }            
+
+        [Fact]
+        public void IPv4PatternTest()
+        {
+            Grok act = new Grok("%{IPV4:IP}:%{GREEDYDATA:comment}");
+            string logs = @"172.26.34.32:Free as in Free Beer
+                10.0.12.17:In for the win";
+            
+            GrokResult grokResult = act.Parse(logs);
+           
+            Assert.Equal("172.26.34.32", grokResult[0].Value);
+            Assert.Equal("Free as in Free Beer", grokResult[1].Value);
+            Assert.Equal("10.0.12.17", grokResult[2].Value);
+            Assert.Equal("In for the win", grokResult[3].Value);            
+        }  
     }
 }
