@@ -41,9 +41,9 @@ namespace GrokNetTests
             Grok act = new Grok("%{MONTHDAY:month}-%{MONTHDAY:day}-%{MONTHDAY:year} %{TIME:timestamp};%{WORD:id};%{LOGLEVEL:loglevel};%{WORD:func};%{GREEDYDATA:msg}");
             string logs = @"06-21-19 21:00:13:589241;15;INFO;main;DECODED: 775233900043 DECODED BY: 18500738 DISTANCE: 1.5165
                06-21-19 21:00:13:589265;156;WARN;main;DECODED: 775233900043 EMPTY DISTANCE: --------";
-            string month="06";
-            string day = "21";
-            string year = "19";   
+            const string month="06";
+            const string day = "21";
+            const string year = "19";   
             
             GrokResult grokResult = act.Parse(logs);
 
@@ -78,8 +78,8 @@ namespace GrokNetTests
         public void EmailPatternTest()
         {
             Grok act = new Grok("%{EMAILADDRESS:email}:%{GREEDYDATA:comment}");
-            string emailAddress ="Bob.Davis@microsoft.com";
-            string comment = "Free as in Free Beer";
+            const string emailAddress ="Bob.Davis@microsoft.com";
+            const string comment = "Free as in Free Beer";
             string logs = emailAddress + ":" + comment;
             
             GrokResult grokResult = act.Parse(logs);
@@ -104,10 +104,10 @@ namespace GrokNetTests
         public static IEnumerable<object[]> GetIpv4PatternTestData()
         { 
             string grokPattern="%{IPV4:IP}:%{GREEDYDATA:comment}";
-            string ip1 ="172.26.34.32";
-            string comment1 = "Free as in Free Beer";
-            string ip2="10.0.12.17";
-            string comment2="In for the win";
+            const string ip1 ="172.26.34.32";
+            const string comment1 = "Free as in Free Beer";
+            const string ip2="10.0.12.17";
+            const string comment2="In for the win";
             string logs = ip1 + ":" + comment1 +"\n"+ ip2 + ":" + comment2;
             int elementOffset = 0;    
 
