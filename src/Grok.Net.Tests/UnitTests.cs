@@ -96,7 +96,7 @@ namespace GrokNetTests
             const string ipAddress = "172.26.34.32";
             const string comment = "Free as in Free Beer"; 
             string logs = $"{ipAddress}:{comment}";
-            string grokPattern="%{IPV4:IP}:%{GREEDYDATA:comment}";
+            string grokPattern = "%{IPV4:IP}:%{GREEDYDATA:comment}";
             Grok act = new Grok(grokPattern);
             
             GrokResult grokResult = act.Parse(logs);
