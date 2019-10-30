@@ -123,5 +123,21 @@ namespace GrokNetTests
             Assert.Equal(ipAddress, grokResult[0].Value);
             Assert.Equal(comment, grokResult[1].Value);
         } 
+
+        [Theory]
+        [InlineData("www.dev.to")]
+        [InlineData("dev.to")]        
+        public void HostnamePatternTest(string hostName)
+        {
+            const string timestamp = "21:00:13:589241"; 
+            string logs = $"{hostName}:{timestamp}";
+            string grokPattern = "%{HOSTNAME:host}:%{TIME:timestamp}";
+            Grok act = new Grok(grokPattern);
+            
+            GrokResult grokResult = act.Parse(logs);
+           
+            Assert.Equal(hostName, grokResult[0].Value);
+            Assert.Equal(timestamp, grokResult[1].Value);
+        } 
     }
 }
