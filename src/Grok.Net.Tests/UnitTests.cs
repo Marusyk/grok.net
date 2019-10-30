@@ -104,5 +104,24 @@ namespace GrokNetTests
             Assert.Equal(ipAddress, grokResult[0].Value);
             Assert.Equal(comment, grokResult[1].Value);
         }  
+
+        [Theory]
+        [InlineData("2001:0db8:85a3:0000:0000:8a2e:0370:7334")]
+        [InlineData("2001:db8:85a3:0:0:8a2e:370:7334")]
+        [InlineData("2001:db8:85a3::8a2e:370:7334")]
+        [InlineData("::1")] // Loopback
+        [InlineData("::")]  // Default route
+        public void IPv6PatternTest(string ipAddress)
+        {
+            const string comment = "Free as in Free Beer"; 
+            string logs = $"{ipAddress}:{comment}";
+            string grokPattern = "%{IPV6:IP}:%{GREEDYDATA:comment}";
+            Grok act = new Grok(grokPattern);
+            
+            GrokResult grokResult = act.Parse(logs);
+           
+            Assert.Equal(ipAddress, grokResult[0].Value);
+            Assert.Equal(comment, grokResult[1].Value);
+        } 
     }
 }
