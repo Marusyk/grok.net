@@ -37,7 +37,11 @@ Task("Run-Unit-Tests")
     .IsDependentOn("Build")
     .Does(() =>
 {
-    // No unit tests yet!
+    var projectFile = Directory("./src/Grok.Net.Tests") + File("Grok.Net.Tests.csproj");
+    DotNetCoreTest(System.IO.Path.GetFullPath(projectFile), new DotNetCoreTestSettings()
+    {
+        Configuration = configuration
+    });
 });
 
 Task("NuGet-Pack")
