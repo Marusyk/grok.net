@@ -138,6 +138,22 @@ namespace GrokNetTests
            
             Assert.Equal(hostName, grokResult[0].Value);
             Assert.Equal(timestamp, grokResult[1].Value);
-        } 
+        }
+        [Theory]
+        [InlineData("78-C8-A1-7F-83-69")]
+        [InlineData("78:C8:A1:7F:83:69")]   
+        [InlineData("7308.A32F.47A8")]
+        public void MacPatternTest(string macAddress)
+        {
+            const string timestamp = "21:00:13:589241"; 
+            string logs = $"{macAddress}:{timestamp}";
+            string grokPattern = "%{MAC:mac}:%{TIME:timestamp}";
+            Grok act = new Grok(grokPattern);
+            
+            GrokResult grokResult = act.Parse(logs);
+           
+            Assert.Equal(macAddress, grokResult[0].Value);
+            Assert.Equal(timestamp, grokResult[1].Value);
+        }
     }
 }
