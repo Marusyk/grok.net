@@ -5,9 +5,9 @@
     <PackageId>grok.net</PackageId>
     <Authors>RMarusyk</Authors>
     <Description>Cross platform .NET grok implementation</Description>
-    <License>https://github.com/Marusyk/grok.net/blob/master/LICENSE</License>
+    <License>https://github.com/Marusyk/grok.net/blob/main/LICENSE</License>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageIconUrl>https://raw.githubusercontent.com/Marusyk/grok.net/master/Grok.png</PackageIconUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/Marusyk/grok.net/main/Grok.png</PackageIconUrl>
     <PackageProjectUrl>https://github.com/Marusyk/grok.net</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Marusyk/grok.net</RepositoryUrl>
     <PackageTags>grok;grok-parser;grok-patterns;grokking;c-sharp-library</PackageTags>

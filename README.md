@@ -12,8 +12,8 @@ Cross platform .NET grok implementation as a NuGet package
  [![GitHub release](https://badge.fury.io/gh/Marusyk%2Fgrok.net.svg)](https://github.com/Marusyk/grok.net/releases/tag/1.0.1)
  [![NuGet version](https://badge.fury.io/nu/grok.net.svg)](https://badge.fury.io/nu/grok.net)
  [![Nuget](https://img.shields.io/nuget/dt/grok.net.svg)](https://www.nuget.org/packages/Grok.Net)
- [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/Marusyk/grok.net/blob/master/LICENSE) 
- [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/Marusyk/grok.net/blob/master/CONTRIBUTING.md)
+ [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/Marusyk/grok.net/blob/main/LICENSE) 
+ [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/Marusyk/grok.net/blob/main/CONTRIBUTING.md)
 
 # How to Install
 
@@ -60,7 +60,7 @@ The pattern for this could be:
 
 More about [grok][4]
 
-[3]: https://raw.githubusercontent.com/logstash-plugins/logstash-patterns-core/master/patterns/grok-patterns
+[3]: https://raw.githubusercontent.com/logstash-plugins/logstash-patterns-core/main/patterns/grok-patterns
 [4]: https://www.elastic.co/guide/en/logstash/current/plugins-filters-grok.html
 # How to use
 
@@ -103,8 +103,8 @@ build.sh
 
 Would you like to help make grok.net even better? We keep a list of issues that are approachable for newcomers under the [good-first-issue](https://github.com/Marusyk/grok.net/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22) label.
 
-Also. please read [CONTRIBUTING.md](https://github.com/Marusyk/grok.net/blob/master/CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
+Also. please read [CONTRIBUTING.md](https://github.com/Marusyk/grok.net/blob/main/CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](https://github.com/Marusyk/grok.net/blob/master/LICENSE) file for details
+This project is licensed under the MIT License - see the [LICENSE.md](https://github.com/Marusyk/grok.net/blob/main/LICENSE) file for details
