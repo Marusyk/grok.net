@@ -10,6 +10,7 @@ namespace GrokNet
 {
     public class Grok
     {
+        private const string customPatternFileName = "grok-custom-patterns";
         private readonly string _grokPattern;
         private bool _patternsLoaded;
         private readonly Dictionary<string, string> _patterns;
@@ -123,10 +124,21 @@ namespace GrokNet
                             ProcessPatternLine(sr.ReadLine());
                         }
                     }
-
-                    _patternsLoaded = true;
                 }
             }
+
+            if (File.Exists(customPatternFileName))
+            {
+                using (var sr = new StreamReader(customPatternFileName, Encoding.UTF8))
+                {
+                    while (!sr.EndOfStream)
+                    {
+                        ProcessPatternLine(sr.ReadLine());
+                    }
+                }
+            }
+
+            _patternsLoaded = true;
         }
 
         private void ProcessPatternLine(string line)
@@ -142,7 +154,11 @@ namespace GrokNet
                 return;
             }
 
-            _patterns.Add(strArray[0], strArray[1]);
+            // check before adding to avoid an exception in case the same pattern is present in the custom patterns file.
+            if (!_patterns.ContainsKey(strArray[0]))
+            {
+                _patterns.Add(strArray[0], strArray[1]);
+            }
         }
 
         private string ReplaceWithName(Match match)

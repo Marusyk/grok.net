@@ -171,5 +171,23 @@ namespace GrokNetTests
             Assert.Equal(macAddress, grokResult[0].Value);
             Assert.Equal(timestamp, grokResult[1].Value);
         }
+
+        [Theory]
+        [InlineData("122001")]
+        [InlineData("122 001")]
+        [InlineData("235 012")]
+        public void LoadCustomPatterns(string zipcode)
+        {
+            // Arrange
+            const string email = "Bob.Davis@microsoft.com";
+            var sut = new Grok("%{ZIPCODE:zipcode}:%{EMAILADDRESS:email}");
+
+            // Act
+            var grokResult = sut.Parse($"{zipcode}:{email}");
+
+            // Assert
+            Assert.Equal(zipcode, grokResult[0].Value);
+            Assert.Equal(email, grokResult[1].Value);
+        }
     }
 }
