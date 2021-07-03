@@ -10,7 +10,6 @@ namespace GrokNet
 {
     public class Grok
     {
-        private const string customPatternFileName = "grok-custom-patterns";
         private readonly string _grokPattern;
         private bool _patternsLoaded;
         private readonly Dictionary<string, string> _patterns;
