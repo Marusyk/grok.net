@@ -14,6 +14,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2    
     - name: Cake Action
-      uses: ecampidoglio/cake-action@v1.1.1
+      uses: cake-build/cake-action@v1.3.0
       with:
         target: Run-Unit-Tests
