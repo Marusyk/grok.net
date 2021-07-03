@@ -123,8 +123,29 @@ namespace GrokNet
                             ProcessPatternLine(sr.ReadLine());
                         }
                     }
+                }
+            }
 
-                    _patternsLoaded = true;
+            LoadCustomPatterns();
+
+            _patternsLoaded = true;
+        }
+
+        private void LoadCustomPatterns()
+        {
+            var directoryInfo = new DirectoryInfo("Patterns");
+            if (!directoryInfo.Exists)
+            {
+                return;
+            }
+            foreach (FileInfo file in directoryInfo.GetFiles("*", SearchOption.AllDirectories))
+            {
+                using (StreamReader sr = file.OpenText())
+                {
+                    while (!sr.EndOfStream)
+                    {
+                        ProcessPatternLine(sr.ReadLine());
+                    }
                 }
             }
         }
@@ -142,7 +163,11 @@ namespace GrokNet
                 return;
             }
 
-            _patterns.Add(strArray[0], strArray[1]);
+            // check before adding to avoid an exception in case the same pattern is present in the custom patterns file.
+            if (!_patterns.ContainsKey(strArray[0]))
+            {
+                _patterns.Add(strArray[0], strArray[1]);
+            }
         }
 
         private string ReplaceWithName(Match match)

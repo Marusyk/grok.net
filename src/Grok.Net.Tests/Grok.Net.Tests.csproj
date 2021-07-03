@@ -16,4 +16,10 @@
     <ProjectReference Include="..\Grok.Net\Grok.Net.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Patterns\grok-custom-patterns">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
