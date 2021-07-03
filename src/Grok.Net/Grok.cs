@@ -127,9 +127,21 @@ namespace GrokNet
                 }
             }
 
-            if (File.Exists(customPatternFileName))
+            LoadCustomPatterns();
+
+            _patternsLoaded = true;
+        }
+
+        private void LoadCustomPatterns()
+        {
+            var directoryInfo = new DirectoryInfo("Patterns");
+            if (!directoryInfo.Exists)
             {
-                using (var sr = new StreamReader(customPatternFileName, Encoding.UTF8))
+                return;
+            }
+            foreach (FileInfo file in directoryInfo.GetFiles("*", SearchOption.AllDirectories))
+            {
+                using (StreamReader sr = file.OpenText())
                 {
                     while (!sr.EndOfStream)
                     {
@@ -137,8 +149,6 @@ namespace GrokNet
                     }
                 }
             }
-
-            _patternsLoaded = true;
         }
 
         private void ProcessPatternLine(string line)
