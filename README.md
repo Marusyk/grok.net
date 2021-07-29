@@ -87,6 +87,23 @@ foreach (var item in grokResult)
 }
 ```
 
+# Custom grok patterns 
+
+Create a directory called `Patterns` and a file (the file name doesn't matter, but name it meaningfully for yourself) with your own patterns. In that file, write the pattern you need as the pattern name, space, then the regexp for that pattern.
+
+For example, Patterns\grok-custom-patterns:
+
+```
+ZIPCODE [1-9]{1}[0-9]{2}\s{0,1}[0-9]{3}
+```
+
+and use:
+
+```csharp
+Grok grok = new Grok("%{ZIPCODE:zipcode}:%{EMAILADDRESS:email}");
+var grokResult = grok.Parse($"122001:Bob.Davis@microsoft.com");
+```
+
 ## Build
 
 On Windows: 
