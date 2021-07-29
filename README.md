@@ -64,7 +64,7 @@ More about [grok][4]
 [4]: https://www.elastic.co/guide/en/logstash/current/plugins-filters-grok.html
 # How to use
 
-Create a new instanse with grok pattern:
+Create a new instance with grok pattern:
 
 ```csharp
 Grok grok = new Grok("%{MONTHDAY:month}-%{MONTHDAY:day}-%{MONTHDAY:year} %{TIME:timestamp};%{WORD:id};%{LOGLEVEL:loglevel};%{WORD:func};%{GREEDYDATA:msg}");
@@ -85,6 +85,23 @@ foreach (var item in grokResult)
 {
   Console.WriteLine($"{item.Key} : {item.Value}");
 }
+```
+
+# Custom grok patterns 
+
+Create a directory called `Patterns` and a file (the file name doesn't matter, but name it meaningfully for yourself) with your own patterns. In that file, write the pattern you need as the pattern name, space, then the regexp for that pattern.
+
+For example, Patterns\grok-custom-patterns:
+
+```
+ZIPCODE [1-9]{1}[0-9]{2}\s{0,1}[0-9]{3}
+```
+
+and use:
+
+```csharp
+Grok grok = new Grok("%{ZIPCODE:zipcode}:%{EMAILADDRESS:email}");
+var grokResult = grok.Parse($"122001:Bob.Davis@microsoft.com");
 ```
 
 ## Build
