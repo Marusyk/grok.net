@@ -1,12 +1,9 @@
 ﻿using BenchmarkDotNet.Running;
- 
-namespace GrokNet.Benchmark
+
+namespace Benchmark
 {
     class Program
     {
-        static void Main(string[] args)
-        {
-            BenchmarkRunner.Run<ParseBenchmark>();
-        }
+        static void Main(string[] args) => BenchmarkRunner.Run<ParseBenchmark>();
     }
 }
