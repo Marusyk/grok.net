@@ -64,7 +64,7 @@ More about [grok][4]
 [4]: https://www.elastic.co/guide/en/logstash/current/plugins-filters-grok.html
 # How to use
 
-Create a new instanse with grok pattern:
+Create a new instance with grok pattern:
 
 ```csharp
 Grok grok = new Grok("%{MONTHDAY:month}-%{MONTHDAY:day}-%{MONTHDAY:year} %{TIME:timestamp};%{WORD:id};%{LOGLEVEL:loglevel};%{WORD:func};%{GREEDYDATA:msg}");

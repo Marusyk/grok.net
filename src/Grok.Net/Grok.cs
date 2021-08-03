@@ -49,7 +49,7 @@ namespace GrokNet
                     }
                 }
             }
-            return new GrokResult(grokItems);
+            return new GrokResult(grokItems);       
         }
 
         private void ParseGrokString()
