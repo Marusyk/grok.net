@@ -104,21 +104,6 @@ Grok grok = new Grok("%{ZIPCODE:zipcode}:%{EMAILADDRESS:email}");
 var grokResult = grok.Parse($"122001:Bob.Davis@microsoft.com");
 ```
 
-# Benchmark
-
-BenchmarkDotNet=v0.13.0, OS=ubuntu 20.04  
-Intel Core i7-7700HQ CPU 2.80GHz (Kaby Lake), 1 CPU, 8 logical and 4 physical cores  
-.NET SDK=5.0.302  
-
-|      Method |            Mean |         Error |        StdDev |
-|------------ |----------------:|--------------:|--------------:|
-|       Empty |        213.4 ns |       1.50 ns |       1.33 ns |
-|      Custom |        183.5 ns |       1.30 ns |       1.15 ns |
-|         Log |      3,271.6 ns |      18.20 ns |      17.02 ns |
-|  EmptyLocal |    411,757.1 ns |   2,033.16 ns |   1,802.34 ns |
-| CustomLocal |  4,687,123.9 ns |  30,636.92 ns |  28,657.80 ns |
-|    LogLocal | 17,192,484.2 ns | 162,982.24 ns | 152,453.69 ns |
-
 ## Build
 
 On Windows: 

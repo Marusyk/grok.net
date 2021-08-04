@@ -3,6 +3,7 @@ using GrokNet;
 
 namespace Benchmark
 {
+    [MemoryDiagnoser]
     public class ParseBenchmark
     {
         private static readonly Grok _grokEmpty = new Grok("");

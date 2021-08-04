@@ -2,8 +2,8 @@
 
 namespace Benchmark
 {
-    class Program
+    public class Program
     {
-        static void Main(string[] args) => BenchmarkRunner.Run<ParseBenchmark>();
+        private static void Main() => BenchmarkRunner.Run<ParseBenchmark>();
     }
 }
