@@ -125,3 +125,5 @@ Also. please read [CONTRIBUTING.md](https://github.com/Marusyk/grok.net/blob/mai
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE.md](https://github.com/Marusyk/grok.net/blob/main/LICENSE) file for details
+
+Thanks to @martinjt. The project is based on [martinjt/grokdotnet](https://github.com/martinjt/grokdotnet). 
