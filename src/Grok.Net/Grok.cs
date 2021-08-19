@@ -163,11 +163,32 @@ namespace GrokNet
                 return;
             }
 
-            // check before adding to avoid an exception in case the same pattern is present in the custom patterns file.
-            if (!_patterns.ContainsKey(strArray[0]))
+            if (IsPatternValid(strArray))
             {
-                _patterns.Add(strArray[0], strArray[1]);
+                // check before adding to avoid an exception in case the same pattern is present in the custom patterns file.
+                if (!_patterns.ContainsKey(strArray[0]))
+                {
+                    _patterns.Add(strArray[0], strArray[1]);
+                }
             }
+        }
+
+        private bool IsPatternValid(string[] pattern)
+        {
+            if (pattern.Length != 2)
+            {
+                return false;
+            }
+            try
+            {
+                Regex.Match("", pattern[1]);
+            }
+            catch (ArgumentException)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         private string ReplaceWithName(Match match)
