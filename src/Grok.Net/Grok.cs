@@ -144,11 +144,16 @@ namespace GrokNet
                 {
                     while (!sr.EndOfStream)
                     {
-                        string pattern = sr.ReadLine();
-                        Regex validation = new Regex("[^\\s]\\s{1}[^\\s]");
-                        if (validation.IsMatch(pattern))
+                        string line = sr.ReadLine();
+                        string[] pattern = line.Split(' ');
+                        try
                         {
-                            ProcessPatternLine(pattern);
+                            Regex.Match("", pattern[1]);
+                            ProcessPatternLine(line);
+                        }
+                        catch (ArgumentException e)
+                        {
+                            Console.WriteLine(e.Message);
                         }
                     }
                 }
