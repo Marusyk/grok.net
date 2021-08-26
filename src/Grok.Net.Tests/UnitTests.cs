@@ -189,5 +189,23 @@ namespace GrokNetTests
             Assert.Equal(zipcode, grokResult[0].Value);
             Assert.Equal(email, grokResult[1].Value);
         }
+
+        [Theory]
+        [InlineData("5")]
+        [InlineData("39")]
+        [InlineData("110")]
+        public void LoadWrongCustomPatterns(string duration)
+        {
+            // Arrange
+            const string client = "192.168.1.1";
+            var sut = new Grok("%{PATTERN1:duration}:%{PATTERN2:client}");
+
+            // Act
+            var grokResult = sut.Parse($"{duration}:{client}");
+
+            // Assert
+            Assert.Equal("", grokResult[0].Value);
+            Assert.Equal("", grokResult[1].Value);
+        }
     }
 }
