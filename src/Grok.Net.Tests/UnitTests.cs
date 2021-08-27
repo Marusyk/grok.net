@@ -191,21 +191,30 @@ namespace GrokNetTests
         }
 
         [Theory]
-        [InlineData("5")]
-        [InlineData("39")]
-        [InlineData("110")]
+        [InlineData("10")]
+        [InlineData("15")]
+        [InlineData("20")]
         public void LoadWrongCustomPatterns(string duration)
         {
             // Arrange
             const string client = "192.168.1.1";
-            var sut = new Grok("%{PATTERN1:duration}:%{PATTERN2:client}");
 
-            // Act
-            var grokResult = sut.Parse($"{duration}:{client}");
+            var sut = new Grok("%{WRONGPATTERN1:duration}:%{WRONGPATTERN2:client}");
 
-            // Assert
-            Assert.Equal("", grokResult[0].Value);
-            Assert.Equal("", grokResult[1].Value);
+            try
+            {
+                // Act
+                var grokResult = sut.Parse($"{duration}:{client}");
+
+                // Assert (checks if regex is invalid)
+                Assert.Equal("", grokResult[0].Value);
+                Assert.Equal("", grokResult[1].Value);
+            }
+            catch
+            {
+                // Assert (checks if pattern is invalid)
+                Assert.Throws<System.FormatException>(() => sut.Parse($"{duration}:{client}"));
+            }
         }
     }
 }
