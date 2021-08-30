@@ -160,7 +160,7 @@ namespace GrokNet
             string[] strArray = line.Split(new[] { ' ' }, 2);
             if (strArray.Length != 2)
             {
-                throw new FormatException(String.Format("Custom pattern was not in a correct form"));
+                throw new FormatException("Custom pattern was not in a correct form");
             }
 
             if (strArray[0].Equals("#", StringComparison.OrdinalIgnoreCase))
