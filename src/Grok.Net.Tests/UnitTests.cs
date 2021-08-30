@@ -190,14 +190,12 @@ namespace GrokNetTests
             Assert.Equal(email, grokResult[1].Value);
         }
 
-        [Theory]
-        [InlineData("10")]
-        [InlineData("15")]
-        [InlineData("20")]
-        public void LoadWrongCustomPatterns(string duration)
+        [Fact]
+        public void LoadWrongCustomPatterns()
         {
             // Arrange
             const string client = "192.168.1.1";
+            const string duration = "1";
 
             var sut = new Grok("%{WRONGPATTERN1:duration}:%{WRONGPATTERN2:client}");
 
