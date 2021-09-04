@@ -158,7 +158,20 @@ namespace GrokNet
             }
 
             string[] strArray = line.Split(new[] { ' ' }, 2);
+            if (strArray.Length != 2)
+            {
+                throw new FormatException("Custom pattern was not in a correct form");
+            }
+
             if (strArray[0].Equals("#", StringComparison.OrdinalIgnoreCase))
+            {
+                return;
+            }
+            try
+            {
+                Regex.Match("", strArray[1]);
+            }
+            catch
             {
                 return;
             }
