@@ -1,28 +1,29 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
-    <PackageId>grok.net</PackageId>
-    <Authors>RMarusyk</Authors>
-    <Description>Cross platform .NET grok implementation</Description>
-    <License>https://github.com/Marusyk/grok.net/blob/main/LICENSE</License>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageIconUrl>https://raw.githubusercontent.com/Marusyk/grok.net/main/Grok.png</PackageIconUrl>
-    <PackageProjectUrl>https://github.com/Marusyk/grok.net</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/Marusyk/grok.net</RepositoryUrl>
-    <PackageTags>grok;grok-parser;grok-patterns;grokking;c-sharp-library</PackageTags>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFrameworks>netstandard2.0;netstandard2.1;net5.0;net6.0</TargetFrameworks>
+        <PackageId>grok.net</PackageId>
+        <Authors>RMarusyk</Authors>
+        <Description>Cross platform .NET grok implementation</Description>
+        <License>https://github.com/Marusyk/grok.net/blob/main/LICENSE</License>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageIconUrl>https://raw.githubusercontent.com/Marusyk/grok.net/main/Grok.png</PackageIconUrl>
+        <PackageProjectUrl>https://github.com/Marusyk/grok.net</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/Marusyk/grok.net</RepositoryUrl>
+        <PackageTags>grok;grok-parser;grok-patterns;grokking;c-sharp-library</PackageTags>
+        <LangVersion>10</LangVersion>
+    </PropertyGroup>
 
-  <PropertyGroup>
-    <Version>1.1.0</Version>
-</PropertyGroup>
+    <PropertyGroup>
+        <Version>1.2.0</Version>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <None Remove="grok-patterns" />
-  </ItemGroup>
+    <ItemGroup>
+        <None Remove="grok-patterns"/>
+    </ItemGroup>
 
-  <ItemGroup>
-    <EmbeddedResource Include="grok-patterns" />
-  </ItemGroup>
+    <ItemGroup>
+        <EmbeddedResource Include="grok-patterns"/>
+    </ItemGroup>
 
 </Project>
