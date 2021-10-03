@@ -49,6 +49,7 @@ public class Grok
                 }
             }
         }
+
         return new GrokResult(grokItems);
     }
 
@@ -72,14 +73,14 @@ public class Grok
                 _typeMaps.Add(match.Groups[2].Value, match.Groups[3].Value);
             }
 
-            string str = _grokWithoutName.Replace(_grokRegex.Replace(string.IsNullOrEmpty(pattern) ? _grokPattern : pattern, ReplaceWithName), ReplaceWithoutName);
+            string str = _grokWithoutName.Replace(
+                _grokRegex.Replace(string.IsNullOrEmpty(pattern) ? _grokPattern : pattern, ReplaceWithName), ReplaceWithoutName);
             if (str.Equals(pattern, StringComparison.CurrentCultureIgnoreCase))
             {
                 flag = true;
             }
 
             pattern = str;
-
         } while (!flag);
 
         _compiledRegex = new Regex(pattern, RegexOptions.Compiled | RegexOptions.ExplicitCapture);
@@ -116,12 +117,10 @@ public class Grok
         {
             if (manifestResourceName.EndsWith("grok-patterns"))
             {
-                using (var sr = new StreamReader(assembly.GetManifestResourceStream(manifestResourceName), Encoding.UTF8))
+                using var sr = new StreamReader(assembly.GetManifestResourceStream(manifestResourceName), Encoding.UTF8);
+                while (!sr.EndOfStream)
                 {
-                    while (!sr.EndOfStream)
-                    {
-                        ProcessPatternLine(sr.ReadLine());
-                    }
+                    ProcessPatternLine(sr.ReadLine());
                 }
             }
         }
@@ -138,14 +137,13 @@ public class Grok
         {
             return;
         }
+
         foreach (FileInfo file in directoryInfo.GetFiles("*", SearchOption.AllDirectories))
         {
-            using (StreamReader sr = file.OpenText())
+            using StreamReader sr = file.OpenText();
+            while (!sr.EndOfStream)
             {
-                while (!sr.EndOfStream)
-                {
-                    ProcessPatternLine(sr.ReadLine());
-                }
+                ProcessPatternLine(sr.ReadLine());
             }
         }
     }
@@ -167,9 +165,10 @@ public class Grok
         {
             return;
         }
+
         try
         {
-            Regex.Match("", strArray[1]);
+            _ = Regex.Match("", strArray[1]);
         }
         catch
         {
