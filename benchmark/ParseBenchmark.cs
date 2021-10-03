@@ -6,9 +6,11 @@ namespace Benchmark;
 [MemoryDiagnoser]
 public class ParseBenchmark
 {
-    private static readonly Grok _grokEmpty = new Grok("");
-    private static readonly Grok _grokLog = new Grok("%{MONTHDAY:month}-%{MONTHDAY:day}-%{MONTHDAY:year} %{TIME:timestamp};%{WORD:id};%{LOGLEVEL:loglevel};%{WORD:func};%{GREEDYDATA:msg}");
-    private static readonly Grok _grokCustom = new Grok("%{ZIPCODE:zipcode}:%{EMAILADDRESS:email}");
+    private static readonly Grok _grokEmpty = new("");
+    private static readonly Grok _grokLog =
+        new(
+            "%{MONTHDAY:month}-%{MONTHDAY:day}-%{MONTHDAY:year} %{TIME:timestamp};%{WORD:id};%{LOGLEVEL:loglevel};%{WORD:func};%{GREEDYDATA:msg}");
+    private static readonly Grok _grokCustom = new("%{ZIPCODE:zipcode}:%{EMAILADDRESS:email}");
 
     [Benchmark]
     public void Empty()

@@ -17,9 +17,9 @@ public class Grok
     private Regex _compiledRegex;
     private List<string> _groupNames;
 
-    private static readonly Regex _grokRegex = new Regex("%{(\\w+):(\\w+)(?::\\w+)?}", RegexOptions.Compiled);
-    private static readonly Regex _grokRegexWithType = new Regex("%{(\\w+):(\\w+):(\\w+)?}", RegexOptions.Compiled);
-    private static readonly Regex _grokWithoutName = new Regex("%{(\\w+)}", RegexOptions.Compiled);
+    private static readonly Regex _grokRegex = new("%{(\\w+):(\\w+)(?::\\w+)?}", RegexOptions.Compiled);
+    private static readonly Regex _grokRegexWithType = new("%{(\\w+):(\\w+):(\\w+)?}", RegexOptions.Compiled);
+    private static readonly Regex _grokWithoutName = new("%{(\\w+)}", RegexOptions.Compiled);
 
     public Grok(string grokPattern)
     {
