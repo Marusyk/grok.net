@@ -30,7 +30,7 @@ public class Grok
 
     public GrokResult Parse(string text)
     {
-        if (_compiledRegex == null)
+        if (_compiledRegex is null)
         {
             ParseGrokString();
         }
