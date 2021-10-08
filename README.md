@@ -17,7 +17,7 @@ Cross platform .NET grok implementation as a NuGet package
 
 # Code Coverage
 
-<img src="./coverage/badge_combined.svg" align="left">
+<img src="./coverage/badge_combined.svg" align="left"></br>
 
 # How to Install
 
