@@ -1,5 +1,9 @@
-#tool nuget:?package=ReportGenerator&version=4.8.13
+// Install addins.
+#addin "nuget:https://api.nuget.org/v3/index.json?package=Cake.Coveralls&version=1.0.0"
+
+// Install tools
 #tool nuget:?package=OpenCover&version=4.7.1221
+#tool "nuget:https://api.nuget.org/v3/index.json?package=coveralls.io&version=1.4.2"
 
 var target = Argument("target", "Default");
 var configuration = Argument("configuration", "Release");
@@ -7,6 +11,7 @@ var configuration = Argument("configuration", "Release");
 var artifactsDir = "./artifacts/";
 var projectFile = "./src/Grok.Net/Grok.Net.csproj";
 var testResultFile = "./test-results/results.xml";
+var coverallsRepoToken = EnvironmentVariable("COVERALLS_REPO_TOKEN");
 
 Task("Clean")
     .Does(() =>
@@ -37,40 +42,52 @@ Task("Build")
     });
 });
 
-Task("Run-Unit-Tests-With-OpenCover")
+Task("Run-Unit-Tests")
     .IsDependentOn("Build")
     .Does(() =>
 {
     var projectFile = Directory("./src/Grok.Net.Tests") + File("Grok.Net.Tests.csproj");
-    OpenCover(tool => {
-            tool.DotNetCoreTest(
-              System.IO.Path.GetFullPath(projectFile),
-              new DotNetCoreTestSettings()
-              {
-                  Configuration = configuration
-              }
-            );
-        },
-        testResultFile, new OpenCoverSettings()
-    );
+
+    if(BuildSystem.IsLocalBuild || BuildSystem.IsPullRequest)
+    {
+        DotNetCoreTest(System.IO.Path.GetFullPath(projectFile), new DotNetCoreTestSettings()
+        {
+            Configuration = configuration
+        });
+    }
+    else
+    {
+        OpenCover(tool => {
+                tool.DotNetCoreTest(
+                System.IO.Path.GetFullPath(projectFile),
+                new DotNetCoreTestSettings()
+                {
+                    Configuration = configuration
+                }
+                );
+            },
+            testResultFile, new OpenCoverSettings() {
+                Filters = { "-[*xunit*]*", "-[*Tests*]*", "+[*]*" }
+            }
+        );
+    }
 });
 
-Task("Generate-Coverage-Badges")
-    .IsDependentOn("Run-Unit-Tests-With-OpenCover")
+Task("Upload-Coverage-Report")
+    .IsDependentOn("Run-Unit-Tests")
+    .WithCriteria((context) => !BuildSystem.IsLocalBuild)
+    .WithCriteria((context) => !BuildSystem.IsPullRequest)
+    .WithCriteria((context) => FileExists(testResultFile))
     .Does(() =>
-{    
-    ReportGenerator((FilePath)testResultFile,
-        "./coverage",
-        new ReportGeneratorSettings()
-        {
-            ReportTypes = new List<ReportGeneratorReportType>() { ReportGeneratorReportType.Badges },
-            AssemblyFilters = new List<string>() { "-xunit.*" }
-        }
-    );
+{
+    CoverallsIo(testResultFile, new CoverallsIoSettings()
+    {
+        RepoToken = coverallsRepoToken
+    });
 });
 
 Task("NuGet-Pack")
-    .IsDependentOn("Generate-Coverage-Badges")
+    .IsDependentOn("Upload-Coverage-Report")
     .Does(() =>
 {
     DotNetCorePack(projectFile, new DotNetCorePackSettings()
