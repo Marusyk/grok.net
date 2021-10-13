@@ -1,8 +1,8 @@
 // Install addins.
 #addin "nuget:https://api.nuget.org/v3/index.json?package=Cake.Coveralls&version=1.0.0"
+#addin nuget:?package=Cake.Coverlet&version=2.5.4
 
 // Install tools
-#tool nuget:?package=OpenCover&version=4.7.1221
 #tool "nuget:https://api.nuget.org/v3/index.json?package=coveralls.io&version=1.4.2"
 
 var target = Argument("target", "Default");
@@ -12,6 +12,7 @@ var artifactsDir = "./artifacts/";
 var projectFile = "./src/Grok.Net/Grok.Net.csproj";
 var testResultFile = "./test-results/results.xml";
 var coverallsRepoToken = EnvironmentVariable("COVERALLS_REPO_TOKEN");
+var userprofile = EnvironmentVariable("USERPROFILE");
 
 Task("Clean")
     .Does(() =>
@@ -57,19 +58,18 @@ Task("Run-Unit-Tests")
     }
     else
     {
-        OpenCover(tool => {
-                tool.DotNetCoreTest(
-                System.IO.Path.GetFullPath(projectFile),
-                new DotNetCoreTestSettings()
-                {
-                    Configuration = configuration
-                }
-                );
-            },
-            testResultFile, new OpenCoverSettings() {
-                Filters = { "-[*xunit*]*", "-[GrokNetTests.UnitTests]*", "+[*]*" }
-            }
-        );
+        var coverletSettings = new CoverletSettings {
+            CollectCoverage = true,
+            CoverletOutputFormat = CoverletOutputFormat.opencover,
+            CoverletOutputDirectory = Directory(@".\test-results\"),
+            CoverletOutputName = "results.xml"
+        };
+
+        DotNetCoreTest(System.IO.Path.GetFullPath(projectFile), new DotNetCoreTestSettings()
+        {
+            Configuration = configuration
+        },
+        coverletSettings);
     }
 });
 
@@ -82,7 +82,8 @@ Task("Upload-Coverage-Report")
 {
     CoverallsIo(testResultFile, new CoverallsIoSettings()
     {
-        RepoToken = coverallsRepoToken
+        RepoToken = coverallsRepoToken,
+        Debug = true
     });
 });
 
