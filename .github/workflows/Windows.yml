@@ -2,9 +2,9 @@ name: Windows Build
 
 on:
   push:
-    branches: [ workflow-opencover-issue ]
+    branches: [ main ]
   pull_request:
-    branches: [ workflow-opencover-issue ]
+    branches: [ main ]
 
 jobs:
   build:
