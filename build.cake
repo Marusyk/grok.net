@@ -74,9 +74,7 @@ Task("Run-Unit-Tests")
 
 Task("Upload-Coverage-Report")
     .IsDependentOn("Run-Unit-Tests")
-    .WithCriteria((context) => !BuildSystem.IsLocalBuild)
-    .WithCriteria((context) => !BuildSystem.IsPullRequest)
-    .WithCriteria((context) => FileExists(testResultFile))
+    .WithCriteria((context) => !BuildSystem.IsLocalBuild))
     .Does(() =>
 {
     CoverallsIo(testResultFile, new CoverallsIoSettings()
