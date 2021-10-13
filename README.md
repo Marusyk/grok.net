@@ -1,4 +1,4 @@
-﻿﻿﻿﻿<p align="center">
+﻿﻿﻿﻿﻿<p align="center">
   <img src="Grok.png" alt="Grok" width="250"/>
 </p>
 
@@ -17,7 +17,7 @@ Cross platform .NET grok implementation as a NuGet package
 
 # Code Coverage
 
-[![Coverage Status](https://coveralls.io/repos/github/Adityanr/grok.net/badge.svg?branch=enhancement/gh-30)](https://coveralls.io/github/Adityanr/grok.net?branch=enhancement/gh-30)</br>
+[![Coverage Status](https://coveralls.io/repos/github/Marusyk/grok.net/badge.svg?branch=main)](https://coveralls.io/github/Marusyk/grok.net?branch=main)</br>
 
 # How to Install
 
