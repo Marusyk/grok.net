@@ -12,7 +12,6 @@ var artifactsDir = "./artifacts/";
 var projectFile = "./src/Grok.Net/Grok.Net.csproj";
 var testResultFile = "./test-results/results.xml";
 var coverallsRepoToken = EnvironmentVariable("COVERALLS_REPO_TOKEN");
-var userprofile = EnvironmentVariable("USERPROFILE");
 
 Task("Clean")
     .Does(() =>
