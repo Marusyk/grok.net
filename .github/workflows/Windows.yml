@@ -2,9 +2,9 @@ name: Windows Build
 
 on:
   push:
-    branches: [ main ]
+    branches: [ workflow-opencover-issue ]
   pull_request:
-    branches: [ main ]
+    branches: [ workflow-opencover-issue ]
 
 jobs:
   build:
@@ -12,8 +12,12 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@v2    
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
     - name: Cake Action
       uses: cake-build/cake-action@v1.3.0
+      env:
+        COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
       with:
         target: Upload-Coverage-Report
