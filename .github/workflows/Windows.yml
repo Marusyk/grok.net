@@ -16,4 +16,4 @@ jobs:
     - name: Cake Action
       uses: cake-build/cake-action@v1.3.0
       with:
-        target: Run-Unit-Tests
+        target: Upload-Coverage-Report
