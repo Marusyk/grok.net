@@ -1,3 +1,4 @@
+using System;
 using GrokNet;
 using Xunit;
 
@@ -213,6 +214,48 @@ namespace GrokNetTests
                 // Assert (checks if pattern is invalid)
                 Assert.Throws<System.FormatException>(() => sut.Parse($"{duration}:{client}"));
             }
+        }
+
+        [Fact]
+        public void ParseIntPatternWithType()
+        {
+            // Arrange
+            const int int_value = 28;
+            var date_time = new DateTime(2010, 10, 10);
+            const double float_value = 3000.5F;
+
+            var sut = new Grok("%{INT:int_value:int}:%{DATESTAMP:date_time:datetime}:%{FLOAT:float_value:float}");
+
+            // Act
+            GrokResult grokResult = sut.Parse($"{int_value}:{date_time:dd-MM-yyyy HH:mm:ss}:{float_value}");
+
+            // Assert (Should parse everything to it's own type)
+            Assert.Equal("int_value", grokResult[0].Key);
+            Assert.Equal("date_time", grokResult[1].Key);
+            Assert.Equal("float_value", grokResult[2].Key);
+
+            Assert.Equal(int_value, grokResult[0].Value);
+            Assert.Equal(date_time, grokResult[1].Value);
+            Assert.Equal(float_value, grokResult[2].Value);
+
+            Assert.IsType<int>(grokResult[0].Value);
+            Assert.IsType<DateTime>(grokResult[1].Value);
+            Assert.IsType<double>(grokResult[2].Value);
+        }
+
+        [Fact]
+        public void ParseIntWithType_IgnoreTypeWhenExceptionOccurs() {
+            // Arrange
+            const string int_overflow = "123456789645345636534653645";
+
+            var sut = new Grok("%{INT:int_overflow:int}");
+
+            // Act
+            GrokResult grokResult = sut.Parse($"{int_overflow}");
+
+            // Assert (Should parse without type)
+            Assert.Equal("int_overflow", grokResult[0].Key);
+            Assert.Equal(int_overflow, grokResult[0].Value);
         }
     }
 }
