@@ -217,45 +217,46 @@ namespace GrokNetTests
         }
 
         [Fact]
-        public void ParseIntPatternWithType()
+        public void ParsePatternWithTypeShouldParseToTheSpecifiedType()
         {
             // Arrange
-            const int int_value = 28;
-            var date_time = new DateTime(2010, 10, 10);
-            const double float_value = 3000.5F;
+            const int intValue = 28;
+            var dateTime = new DateTime(2010, 10, 10);
+            const double floatValue = 3000.5F;
 
             var sut = new Grok("%{INT:int_value:int}:%{DATESTAMP:date_time:datetime}:%{FLOAT:float_value:float}");
 
             // Act
-            GrokResult grokResult = sut.Parse($"{int_value}:{date_time:dd-MM-yyyy HH:mm:ss}:{float_value}");
+            GrokResult grokResult = sut.Parse($"{intValue}:{dateTime:dd-MM-yyyy HH:mm:ss}:{floatValue}");
 
-            // Assert (Should parse everything to it's own type)
+            // Assert
             Assert.Equal("int_value", grokResult[0].Key);
-            Assert.Equal("date_time", grokResult[1].Key);
-            Assert.Equal("float_value", grokResult[2].Key);
-
-            Assert.Equal(int_value, grokResult[0].Value);
-            Assert.Equal(date_time, grokResult[1].Value);
-            Assert.Equal(float_value, grokResult[2].Value);
-
+            Assert.Equal(intValue, grokResult[0].Value);
             Assert.IsType<int>(grokResult[0].Value);
+
+            Assert.Equal("date_time", grokResult[1].Key);
+            Assert.Equal(dateTime, grokResult[1].Value);
             Assert.IsType<DateTime>(grokResult[1].Value);
-            Assert.IsType<double>(grokResult[2].Value);
+
+            Assert.Equal("float_value", grokResult[2].Key);
+            Assert.Equal(floatValue, grokResult[2].Value);
+            Assert.IsType<double>(grokResult[2].Value); // Float converts to double actually
         }
-
-        [Fact]
-        public void ParseIntWithType_IgnoreTypeWhenExceptionOccurs() {
+        
+        [Theory]
+        [InlineData("INT", "2147483648", "int")]
+        [InlineData("DATESTAMP", "11-31-2021 02:08:58", "datetime")]
+        [InlineData("WRONGFLOAT", "notanumber", "float")]
+        public void ParseWithTypeParseExceptionShouldIgnoreType(string regex, string parse, string toType) {
             // Arrange
-            const string int_overflow = "123456789645345636534653645";
-
-            var sut = new Grok("%{INT:int_overflow:int}");
+            var sut = new Grok("%{" + $"{regex}:parse:{toType}" + "}");
 
             // Act
-            GrokResult grokResult = sut.Parse($"{int_overflow}");
+            GrokResult grokResult = sut.Parse($"{parse}");
 
-            // Assert (Should parse without type)
-            Assert.Equal("int_overflow", grokResult[0].Key);
-            Assert.Equal(int_overflow, grokResult[0].Value);
+            // Assert
+            Assert.Equal("parse", grokResult[0].Key);
+            Assert.Equal(parse, grokResult[0].Value);
         }
     }
 }
