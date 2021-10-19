@@ -255,7 +255,7 @@ namespace GrokNetTests
             GrokResult grokResult = sut.Parse($"{parse}");
 
             // Assert
-            Assert.Equal("parse", grokResult[0].Key);
+            Assert.Equal(nameof(parse), grokResult[0].Key);
             Assert.Equal(parse, grokResult[0].Value);
         }
     }
