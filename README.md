@@ -1,13 +1,13 @@
-﻿﻿﻿﻿﻿<p align="center">
+﻿﻿<p align="center">
   <img src="Grok.png" alt="Grok" width="250"/>
 </p>
 
 # grok.net
 Cross platform .NET grok implementation as a NuGet package
 
- ![Windows Build](https://github.com/Marusyk/grok.net/workflows/Windows%20Build/badge.svg)
- ![Linux Build](https://github.com/Marusyk/grok.net/workflows/Linux%20Build/badge.svg)
- ![MacOs Build](https://github.com/Marusyk/grok.net/workflows/MacOs%20Build/badge.svg)
+ [![Windows Build](https://github.com/Marusyk/grok.net/actions/workflows/Windows.yml/badge.svg)](https://github.com/Marusyk/grok.net/actions/workflows/Windows.yml)
+ [![Linux Build](https://github.com/Marusyk/grok.net/actions/workflows/Linux.yml/badge.svg)](https://github.com/Marusyk/grok.net/actions/workflows/Linux.yml)
+ [![MacOs Build](https://github.com/Marusyk/grok.net/actions/workflows/MacOS.yml/badge.svg)](https://github.com/Marusyk/grok.net/actions/workflows/MacOS.yml)
 
  [![GitHub release](https://badge.fury.io/gh/Marusyk%2Fgrok.net.svg)](https://github.com/Marusyk/grok.net/releases/tag/1.0.1)
  [![NuGet version](https://badge.fury.io/nu/grok.net.svg)](https://badge.fury.io/nu/grok.net)
