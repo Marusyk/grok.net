@@ -249,7 +249,7 @@ namespace GrokNetTests
         [InlineData("WRONGFLOAT", "notanumber", "float")]
         public void ParseWithTypeParseExceptionShouldIgnoreType(string regex, string parse, string toType) {
             // Arrange
-            var sut = new Grok("%{" + $"{regex}:parse:{toType}" + "}");
+            var sut = new Grok($"%{{{regex}:{nameof(parse)}:{toType}}}");
 
             // Act
             GrokResult grokResult = sut.Parse($"{parse}");
