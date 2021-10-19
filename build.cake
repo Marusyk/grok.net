@@ -1,6 +1,8 @@
 #addin nuget:?package=Cake.Coveralls&version=1.0.0
 #addin nuget:?package=Cake.Coverlet&version=2.5.4
 
+#tool nuget:?package=coveralls.io&version=1.4.2
+
 var target = Argument("target", "Default");
 var configuration = Argument("configuration", "Release");
 
