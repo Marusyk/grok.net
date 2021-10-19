@@ -247,7 +247,8 @@ namespace GrokNetTests
         [InlineData("INT", "2147483648", "int")]
         [InlineData("DATESTAMP", "11-31-2021 02:08:58", "datetime")]
         [InlineData("WRONGFLOAT", "notanumber", "float")]
-        public void ParseWithTypeParseExceptionShouldIgnoreType(string regex, string parse, string toType) {
+        public void ParseWithTypeParseExceptionShouldIgnoreType(string regex, string parse, string toType)
+        {
             // Arrange
             var sut = new Grok($"%{{{regex}:{nameof(parse)}:{toType}}}");
 
