@@ -1,3 +1,4 @@
+using System;
 using GrokNet;
 using Xunit;
 
@@ -213,6 +214,50 @@ namespace GrokNetTests
                 // Assert (checks if pattern is invalid)
                 Assert.Throws<System.FormatException>(() => sut.Parse($"{duration}:{client}"));
             }
+        }
+
+        [Fact]
+        public void ParsePatternWithTypeShouldParseToTheSpecifiedType()
+        {
+            // Arrange
+            const int intValue = 28;
+            var dateTime = new DateTime(2010, 10, 10);
+            const double floatValue = 3000.5F;
+
+            var sut = new Grok("%{INT:int_value:int}:%{DATESTAMP:date_time:datetime}:%{FLOAT:float_value:float}");
+
+            // Act
+            GrokResult grokResult = sut.Parse($"{intValue}:{dateTime:dd-MM-yyyy HH:mm:ss}:{floatValue}");
+
+            // Assert
+            Assert.Equal("int_value", grokResult[0].Key);
+            Assert.Equal(intValue, grokResult[0].Value);
+            Assert.IsType<int>(grokResult[0].Value);
+
+            Assert.Equal("date_time", grokResult[1].Key);
+            Assert.Equal(dateTime, grokResult[1].Value);
+            Assert.IsType<DateTime>(grokResult[1].Value);
+
+            Assert.Equal("float_value", grokResult[2].Key);
+            Assert.Equal(floatValue, grokResult[2].Value);
+            Assert.IsType<double>(grokResult[2].Value); // Float converts to double actually
+        }
+        
+        [Theory]
+        [InlineData("INT", "2147483648", "int")]
+        [InlineData("DATESTAMP", "11-31-2021 02:08:58", "datetime")]
+        [InlineData("WRONGFLOAT", "notanumber", "float")]
+        public void ParseWithTypeParseExceptionShouldIgnoreType(string regex, string parse, string toType)
+        {
+            // Arrange
+            var sut = new Grok($"%{{{regex}:{nameof(parse)}:{toType}}}");
+
+            // Act
+            GrokResult grokResult = sut.Parse($"{parse}");
+
+            // Assert
+            Assert.Equal(nameof(parse), grokResult[0].Key);
+            Assert.Equal(parse, grokResult[0].Value);
         }
     }
 }
