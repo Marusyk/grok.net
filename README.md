@@ -17,7 +17,8 @@ Cross platform .NET grok implementation as a NuGet package
 
 # Code Coverage
 
-[![Coverage Status](https://coveralls.io/repos/github/Marusyk/grok.net/badge.svg?branch=main)](https://coveralls.io/github/Marusyk/grok.net?branch=main)</br>
+[![Coverage Status](https://coveralls.io/repos/github/Marusyk/grok.net/badge.svg)](https://coveralls.io/github/Marusyk/grok.net)
+</br>
 
 # How to Install
 
