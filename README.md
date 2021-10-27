@@ -1,4 +1,4 @@
-﻿﻿<p align="center">
+<p align="center">
   <img src="Grok.png" alt="Grok" width="250"/>
 </p>
 
@@ -18,17 +18,14 @@ Cross platform .NET grok implementation as a NuGet package
 # Code Coverage
 
 [![Coverage Status](https://coveralls.io/repos/github/Marusyk/grok.net/badge.svg)](https://coveralls.io/github/Marusyk/grok.net)
-</br>
 
 # How to Install
 
-You can directly install this library from [Nuget][1]. There is package:
+You can directly install this library from [Nuget](http://nuget.org). There is package:
 
-**[grok.net][2]**
+**[grok.net](https://www.nuget.org/packages/Grok.Net)**
 
     PM> Install-Package Grok.Net
-[1]: http://nuget.org
-[2]: https://www.nuget.org/packages/Grok.Net
 
 # What is grok
 
@@ -44,7 +41,7 @@ What can I use Grok for?
 
 The syntax for a grok pattern is `%{SYNTAX:SEMANTIC}`
 
-The `SYNTAX` is the name of [the pattern][3] that will match your text. `SEMANTIC` is the key. 
+The `SYNTAX` is the name of [the pattern](https://raw.githubusercontent.com/logstash-plugins/logstash-patterns-core/main/patterns/grok-patterns) that will match your text. `SEMANTIC` is the key. 
 
 For example, `3.44` will be matched by the `NUMBER` pattern and `55.3.244.1` will be matched by the `IP` pattern. `3.44` could be the duration of an event, so you could call it simply `duration`. Further, a string `55.3.244.1` might identify the `client` making a request.
 For the above example, your grok filter would look something like this:
@@ -63,10 +60,8 @@ The pattern for this could be:
 %{IP:client} %{WORD:method} %{URIPATHPARAM:request} %{NUMBER:bytes} %{NUMBER:duration}
 ```
 
-More about [grok][4]
+More about [grok](https://www.elastic.co/guide/en/logstash/current/plugins-filters-grok.html)
 
-[3]: https://raw.githubusercontent.com/logstash-plugins/logstash-patterns-core/main/patterns/grok-patterns
-[4]: https://www.elastic.co/guide/en/logstash/current/plugins-filters-grok.html
 # How to use
 
 Create a new instance with grok pattern:
@@ -121,7 +116,7 @@ On Linux/Mac:
 build.sh
 ```
 
- ## Contributing
+## Contributing
 
 Would you like to help make grok.net even better? We keep a list of issues that are approachable for newcomers under the [good-first-issue](https://github.com/Marusyk/grok.net/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22) label.
 
