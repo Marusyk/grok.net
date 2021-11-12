@@ -1,2 +1,2 @@
 dotnet tool restore
-dotnet cake
+dotnet cake "$@"
