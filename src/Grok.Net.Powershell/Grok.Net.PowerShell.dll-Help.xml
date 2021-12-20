@@ -1,0 +1,206 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+<helpItems xmlns="http://msh" schema="maml">
+    <command:command
+        xmlns:maml="http://schemas.microsoft.com/maml/2004/10"
+        xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10"
+        xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10">
+
+        <command:details>
+            <command:name>Get-Grok</command:name>
+            <command:verb>Get</command:verb>
+            <command:noun>Grok</command:noun>
+            <maml:description>
+                <maml:para>
+                    Grok is a great way to parse unstructured log data into something structured and queryable.
+                </maml:para>
+            </maml:description>
+        </command:details>
+
+        <maml:description>
+            Grok is a great way to parse unstructured log data into something structured and queryable.
+        </maml:description>
+
+        <command:syntax>
+            <command:syntaxItem>
+                <maml:name>Content</maml:name>
+                <command:parameter required="true" pipelineInput="true" position="named">
+                    <maml:name>Input</maml:name>
+                </command:parameter>
+
+                <command:parameter required="true" pipelineInput="false" position="named">
+                    <maml:name>Filter</maml:name>
+                </command:parameter>
+
+                <command:parameter required="false" pipelineInput="false" position="named">
+                    <maml:name>OutputFormat</maml:name>
+                </command:parameter>
+
+                <command:parameter required="false" pipelineInput="false" position="named">
+                    <maml:name>IgnoreUnmatched</maml:name>
+                </command:parameter>
+
+                <command:parameter required="false" pipelineInput="false" position="named">
+                    <maml:name>CsvDelimiter</maml:name>
+                </command:parameter>
+
+                <command:parameter required="false" pipelineInput="false" position="named">
+                    <maml:name>IndentJson</maml:name>
+                </command:parameter>
+            </command:syntaxItem>
+
+            <command:syntaxItem>
+                <maml:name>File</maml:name>
+                <command:parameter required="true" pipelineInput="true" position="named">
+                    <maml:name>Path</maml:name>
+                </command:parameter>
+
+                <command:parameter required="true" pipelineInput="false" position="named">
+                    <maml:name>Filter</maml:name>
+                </command:parameter>
+
+                <command:parameter required="false" pipelineInput="false" position="named">
+                    <maml:name>OutputFormat</maml:name>
+                </command:parameter>
+
+                <command:parameter required="false" pipelineInput="false" position="named">
+                    <maml:name>IgnoreUnmatched</maml:name>
+                </command:parameter>
+
+                <command:parameter required="false" pipelineInput="false" position="named">
+                    <maml:name>CsvDelimiter</maml:name>
+                </command:parameter>
+
+                <command:parameter required="false" pipelineInput="false" position="named">
+                    <maml:name>IndentJson</maml:name>
+                </command:parameter>
+            </command:syntaxItem>
+
+            <command:syntaxItem>
+                <maml:name>Version</maml:name>
+
+                <command:parameter required="true" pipelineInput="false" position="named">
+                    <maml:name>Version</maml:name>
+                </command:parameter>
+            </command:syntaxItem>
+        </command:syntax>
+
+        <command:parameters>
+            <command:parameter required="true" pipelineInput="true" position="named">
+                <maml:name>Input</maml:name>
+                <dev:type>string</dev:type>
+            </command:parameter>
+
+            <command:parameter required="true" pipelineInput="true" position="named">
+                <maml:name>Path</maml:name>
+                <dev:type>string</dev:type>
+            </command:parameter>
+
+            <command:parameter required="true" pipelineInput="false" position="named">
+                <maml:name>Filter</maml:name>
+                <dev:type>string</dev:type>
+            </command:parameter>
+
+            <command:parameter required="false" pipelineInput="false" position="named">
+                <maml:name>OutputFormat</maml:name>
+                <dev:type>string</dev:type>
+                <maml:description>
+                    <maml:para>Formatted table by default</maml:para>
+                </maml:description>
+                <dev:possibleValues>
+                    <dev:possibleValue>
+                        <dev:value>json</dev:value>
+                    </dev:possibleValue>
+                    <dev:possibleValue>
+                        <dev:value>csv</dev:value>
+                    </dev:possibleValue>
+                </dev:possibleValues>
+            </command:parameter>
+
+            <command:parameter required="false" pipelineInput="false" position="named">
+                <maml:name>IgnoreEmptyLines</maml:name>
+            </command:parameter>
+
+            <command:parameter required="false" pipelineInput="false" position="named">
+                <maml:name>IgnoreUnmatched</maml:name>
+            </command:parameter>
+
+            <command:parameter required="false" pipelineInput="false" position="named">
+                <maml:name>CsvDelimiter</maml:name>
+                <dev:type>string</dev:type>
+                <dev:defaultValue>,</dev:defaultValue>
+            </command:parameter>
+
+            <command:parameter required="false" pipelineInput="false" position="named">
+                <maml:name>IndentJson</maml:name>
+            </command:parameter>
+
+            <command:parameter required="true" pipelineInput="false" position="named">
+                <maml:name>Version</maml:name>
+            </command:parameter>
+        </command:parameters>
+        <command:inputTypes>
+            <command:inputType>
+                <dev:type>
+                    <maml:name>string</maml:name>
+                </dev:type>
+                <maml:description>
+                    <maml:para>Content to be parsed</maml:para>
+                </maml:description>
+            </command:inputType>
+
+            <command:inputType>
+                <dev:type>
+                    <maml:name>string</maml:name>
+                </dev:type>
+                <maml:description>
+                    <maml:para>Path to file to be parsed</maml:para>
+                </maml:description>
+            </command:inputType>
+        </command:inputTypes>
+        <command:returnValues>
+            <command:returnValue>
+                <dev:type>
+                    <maml:name>string</maml:name>
+                </dev:type>
+                <maml:description>
+                    <maml:para>Formatted table</maml:para>
+                </maml:description>
+            </command:returnValue>
+
+            <command:returnValue>
+                <dev:type>
+                    <maml:name>string</maml:name>
+                </dev:type>
+                <maml:description>
+                    <maml:para>JSON</maml:para>
+                </maml:description>
+            </command:returnValue>
+
+            <command:returnValue>
+                <dev:type>
+                    <maml:name>string</maml:name>
+                </dev:type>
+                <maml:description>
+                    <maml:para>CSV</maml:para>
+                </maml:description>
+            </command:returnValue>
+        </command:returnValues>
+
+        <command:examples>
+            <command:example>
+                <dev:code>grok -i "55.3.244.1 GET 0.043" -f "%{IP:client} %{WORD:method} %{NUMBER:duration}"</dev:code>
+            </command:example>
+        </command:examples>
+
+        <maml:relatedLinks>
+            <maml:navigationLink>
+                <maml:linkText>GitHub</maml:linkText>
+            </maml:navigationLink>
+            <maml:navigationLink>
+                <maml:linkText>https://github.com/Marusyk/grok.net</maml:linkText>
+            </maml:navigationLink>
+        </maml:relatedLinks>
+    </command:command>
+
+</helpItems>
