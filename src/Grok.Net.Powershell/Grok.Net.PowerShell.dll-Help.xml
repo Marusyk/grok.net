@@ -18,7 +18,9 @@
         </command:details>
 
         <maml:description>
-            Grok is a great way to parse unstructured log data into something structured and queryable.
+            <maml:para>
+                Grok sits on top of Regular Expression (regex) and uses text patterns to match lines in log files.
+            </maml:para>
         </maml:description>
 
         <command:syntax>
@@ -34,6 +36,10 @@
 
                 <command:parameter required="false" pipelineInput="false" position="named">
                     <maml:name>OutputFormat</maml:name>
+                </command:parameter>
+
+                <command:parameter required="false" pipelineInput="false" position="named">
+                    <maml:name>IgnoreEmptyLines</maml:name>
                 </command:parameter>
 
                 <command:parameter required="false" pipelineInput="false" position="named">
@@ -64,6 +70,10 @@
                 </command:parameter>
 
                 <command:parameter required="false" pipelineInput="false" position="named">
+                    <maml:name>IgnoreEmptyLines</maml:name>
+                </command:parameter>
+
+                <command:parameter required="false" pipelineInput="false" position="named">
                     <maml:name>IgnoreUnmatched</maml:name>
                 </command:parameter>
 
@@ -88,22 +98,22 @@
         <command:parameters>
             <command:parameter required="true" pipelineInput="true" position="named">
                 <maml:name>Input</maml:name>
-                <dev:type>string</dev:type>
+                <dev:type>System.String</dev:type>
             </command:parameter>
 
             <command:parameter required="true" pipelineInput="true" position="named">
                 <maml:name>Path</maml:name>
-                <dev:type>string</dev:type>
+                <dev:type>System.String</dev:type>
             </command:parameter>
 
             <command:parameter required="true" pipelineInput="false" position="named">
                 <maml:name>Filter</maml:name>
-                <dev:type>string</dev:type>
+                <dev:type>System.String</dev:type>
             </command:parameter>
 
             <command:parameter required="false" pipelineInput="false" position="named">
                 <maml:name>OutputFormat</maml:name>
-                <dev:type>string</dev:type>
+                <dev:type>System.String</dev:type>
                 <maml:description>
                     <maml:para>Formatted table by default</maml:para>
                 </maml:description>
@@ -127,7 +137,7 @@
 
             <command:parameter required="false" pipelineInput="false" position="named">
                 <maml:name>CsvDelimiter</maml:name>
-                <dev:type>string</dev:type>
+                <dev:type>System.String</dev:type>
                 <dev:defaultValue>,</dev:defaultValue>
             </command:parameter>
 
@@ -142,7 +152,7 @@
         <command:inputTypes>
             <command:inputType>
                 <dev:type>
-                    <maml:name>string</maml:name>
+                    <maml:name>System.String</maml:name>
                 </dev:type>
                 <maml:description>
                     <maml:para>Content to be parsed</maml:para>
@@ -151,7 +161,7 @@
 
             <command:inputType>
                 <dev:type>
-                    <maml:name>string</maml:name>
+                    <maml:name>System.String</maml:name>
                 </dev:type>
                 <maml:description>
                     <maml:para>Path to file to be parsed</maml:para>
@@ -161,7 +171,7 @@
         <command:returnValues>
             <command:returnValue>
                 <dev:type>
-                    <maml:name>string</maml:name>
+                    <maml:name>System.String</maml:name>
                 </dev:type>
                 <maml:description>
                     <maml:para>Formatted table</maml:para>
@@ -170,7 +180,7 @@
 
             <command:returnValue>
                 <dev:type>
-                    <maml:name>string</maml:name>
+                    <maml:name>System.String</maml:name>
                 </dev:type>
                 <maml:description>
                     <maml:para>JSON</maml:para>
@@ -179,7 +189,7 @@
 
             <command:returnValue>
                 <dev:type>
-                    <maml:name>string</maml:name>
+                    <maml:name>System.String</maml:name>
                 </dev:type>
                 <maml:description>
                     <maml:para>CSV</maml:para>
