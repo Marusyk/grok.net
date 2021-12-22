@@ -1,14 +1,7 @@
 ﻿@{
 
 # Script module or binary module file associated with this manifest
-RootModule = if($PSEdition -eq 'Core')
-{
-    'netstandard2.0\Grok.Net.PowerShell.dll'
-}
-else # Desktop
-{
-    'net461\Grok.Net.PowerShell.dll'
-}
+RootModule = 'Grok.Net.PowerShell.dll'
 
 # Version number of this module.
 ModuleVersion = '1.1.0'
