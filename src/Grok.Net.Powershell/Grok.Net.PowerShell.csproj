@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <AssemblyName>Grok.Net.PowerShell</AssemblyName>
+        <RootNamespace>GrokNet.PowerShell</RootNamespace>
+        <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+        <TargetFramework>netstandard2.0</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Grok.Net\Grok.Net.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="ConsoleTables" Version="2.4.2" />
+      <PackageReference Include="CsvHelper" Version="27.2.1" />
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+        <PackageReference Include="PowerShellStandard.Library" Version="5.1.0">
+            <PrivateAssets>All</PrivateAssets>
+        </PackageReference>
+      <PackageReference Update="NETStandard.Library" Version="2.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="Grok.psd1">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Grok.Net.PowerShell.dll-Help.xml">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
+</Project>
