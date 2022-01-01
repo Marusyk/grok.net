@@ -1,24 +1,22 @@
-name: Windows Build
+name: Push NuGet package
 
 on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+  workflow_dispatch:
+  release:
+    types: [published]
 
 jobs:
-  build:
-
+  
+  publish:
     runs-on: windows-latest
-
     steps:
     - uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
+
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 6.0.x
+
     - name: Cake Action
       uses: cake-build/cake-action@v1.4.0
       env:
@@ -26,4 +24,4 @@ jobs:
         NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
         NUGET_API_URL: ${{ secrets.NUGET_API_URL }}
       with:
-        target: UploadTestReport
+        target: NuGetPush

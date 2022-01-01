@@ -1,23 +1,24 @@
-name: MacOs Build
+name: Upload test report
 
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
 
 jobs:
-  build:
 
-    runs-on: macos-latest
-
+  upload:
+    runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
+
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 6.0.x
+
     - name: Cake Action
       uses: cake-build/cake-action@v1.4.0
+      env:
+        COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
       with:
-        target: Test
+        target: UploadTestReport
