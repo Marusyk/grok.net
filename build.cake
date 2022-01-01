@@ -1,4 +1,4 @@
-#addin nuget:?package=Cake.Coveralls&version=1.0.0
+#addin nuget:?package=Cake.Coveralls&version=1.1.0
 #addin nuget:?package=Cake.Coverlet&version=2.5.4
 
 #tool nuget:?package=coveralls.io&version=1.4.2
@@ -13,7 +13,8 @@ var nugetApiUrl = EnvironmentVariable("NUGET_API_URL");
 DirectoryPath artifactsDir = Directory("./artifacts/");
 var testResultsDir = artifactsDir.Combine("test-results");
 var testCoverageOutputFilePath = testResultsDir.CombineWithFilePath("OpenCover.xml");
-var projectFile = File("./src/Grok.Net/Grok.Net.csproj");
+var projectFileMain = File("./src/Grok.Net/Grok.Net.csproj");
+var projectFilePowerShell = File("./src/Grok.Net.PowerShell/Grok.Net.PowerShell.csproj");
 
 Task("Clean")
     .Does(() =>
@@ -26,19 +27,22 @@ Task("Restore")
     .IsDependentOn("Clean")
     .Does(() =>
 {
-    DotNetCoreRestore(projectFile);
+    DotNetRestore(projectFileMain);
+    DotNetRestore(projectFilePowerShell);
 });
 
 Task("Build")
     .IsDependentOn("Restore")
     .Does(() =>
 {
-    DotNetCoreBuild(projectFile, new DotNetCoreBuildSettings
+    var settings = new DotNetBuildSettings
     { 
         Configuration = configuration,
         NoRestore = true,
         NoLogo = true
-    });
+    };
+    DotNetBuild(projectFileMain, settings);
+    DotNetBuild(projectFilePowerShell, settings);
 });
 
 Task("Test")
@@ -79,7 +83,7 @@ Task("NuGetPack")
     .IsDependentOn("UploadTestReport")
     .Does(() =>
 {
-    DotNetCorePack(projectFile, new DotNetCorePackSettings
+    DotNetPack(projectFileMain, new DotNetCorePackSettings
     {
         Configuration = configuration,
         NoRestore = true,
@@ -95,7 +99,7 @@ Task("NuGetPush")
     .WithCriteria(!string.IsNullOrWhiteSpace(nugetApiKey))
     .Does(() =>
 {
-    DotNetCoreNuGetPush(artifactsDir.CombineWithFilePath("*.nupkg").FullPath, new DotNetCoreNuGetPushSettings
+    DotNetNuGetPush(artifactsDir.CombineWithFilePath("*.nupkg").FullPath, new DotNetCoreNuGetPushSettings
     {
         Source = nugetApiUrl,
         ApiKey = nugetApiKey
