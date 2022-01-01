@@ -12,8 +12,12 @@ jobs:
     runs-on: macos-latest
 
     steps:
-    - uses: actions/checkout@v2    
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 6.0.x
     - name: Cake Action
-      uses: cake-build/cake-action@v1.3.0
+      uses: cake-build/cake-action@v1.4.0
       with:
         target: Test
