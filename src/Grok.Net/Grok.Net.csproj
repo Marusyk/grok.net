@@ -1,7 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;netstandard2.1;net6.0</TargetFrameworks>
+    <RootNamespace>GrokNet</RootNamespace>
     <PackageId>grok.net</PackageId>
     <Authors>RMarusyk</Authors>
     <Description>Cross platform .NET grok implementation</Description>
@@ -14,8 +15,8 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <Version>1.1.0</Version>
-</PropertyGroup>
+    <Version>1.2.0</Version>
+  </PropertyGroup>
 
   <ItemGroup>
     <None Remove="grok-patterns" />
@@ -27,6 +28,6 @@
 
   <ItemGroup>
     <None Include="..\..\Grok.png" Pack="true" Visible="false" PackagePath="\"/>
-</ItemGroup>
+  </ItemGroup>
 
 </Project>

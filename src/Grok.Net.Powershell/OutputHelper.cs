@@ -28,8 +28,8 @@ namespace GrokNet.PowerShell
             {
                 return string.Empty;
             }
-            
-            var notNullRecords = records.Where(r => r != null).ToArray();
+
+            Dictionary<string, object>[] notNullRecords = records.Where(r => r != null).ToArray();
             if (!notNullRecords.Any())
             {
                 return "No matching elements found";
@@ -45,7 +45,7 @@ namespace GrokNet.PowerShell
                 using (var csv = new CsvWriter(writer, config))
                 {
                     // write headers
-                    var headers = notNullRecords.First().Keys;
+                    Dictionary<string, object>.KeyCollection headers = notNullRecords.First().Keys;
                     foreach (var header in headers)
                     {
                         csv.WriteField(header);
@@ -54,7 +54,7 @@ namespace GrokNet.PowerShell
                     csv.NextRecord();
 
                     // write records
-                    foreach (var item in records)
+                    foreach (Dictionary<string, object> item in records)
                     {
                         if (item != null)
                         {
@@ -77,7 +77,7 @@ namespace GrokNet.PowerShell
 
         public static string GetFormattedOutput(List<Dictionary<string, object>> records)
         {
-            var notNullRecords = records.Where(r => r != null).ToArray();
+            Dictionary<string, object>[] notNullRecords = records.Where(r => r != null).ToArray();
             if (!notNullRecords.Any())
             {
                 return "No matching elements found";
@@ -85,12 +85,12 @@ namespace GrokNet.PowerShell
 
             var table = new ConsoleTable();
             // write headers
-            var headers = notNullRecords.First().Keys;
+            Dictionary<string, object>.KeyCollection headers = notNullRecords.First().Keys;
             table.AddColumn(headers);
 
             var emptyRow = Enumerable.Repeat("", table.Columns.Count).ToArray();
 
-            foreach (var item in records)
+            foreach (Dictionary<string, object> item in records)
             {
                 if (item is null)
                 {

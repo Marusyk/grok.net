@@ -114,7 +114,7 @@ namespace GrokNet.PowerShell
         {
             var grok = new Grok(Filter);
 
-            using (var fileStream = File.OpenRead(Path))
+            using (FileStream fileStream = File.OpenRead(Path))
             using (var streamReader = new StreamReader(fileStream, Encoding.UTF8, true))
             {
                 string line;
@@ -136,7 +136,7 @@ namespace GrokNet.PowerShell
                 return;
             }
 
-            var grokResult = grok.Parse(line);
+            GrokResult grokResult = grok.Parse(line);
 
             if (grokResult.Count == 0)
             {

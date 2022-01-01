@@ -4,7 +4,7 @@
 RootModule = 'Grok.Net.PowerShell.dll'
 
 # Version number of this module.
-ModuleVersion = '1.1.0'
+ModuleVersion = '1.2.0'
 
 # ID used to uniquely identify this module
 GUID = '84fc90ab-74f4-4dbf-ade8-478538217cc8'
@@ -16,7 +16,7 @@ Author = 'Mohamed Eddami'
 CompanyName = ''
 
 # Copyright statement for this module
-Copyright = '(c) 2021'
+Copyright = '(c) 2022'
 
 # Description of the functionality provided by this module
 Description = 'Grok is a great way to parse unstructured log data into something structured and queryable.'

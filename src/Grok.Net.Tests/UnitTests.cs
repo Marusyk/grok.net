@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using GrokNet;
 using Xunit;
 
@@ -6,6 +7,9 @@ namespace GrokNetTests
 {
     public class UnitTests
     {
+        private static Stream ReadCustomFile() =>
+            File.OpenRead(@"Patterns\grok-custom-patterns");
+
         [Fact]
         public void Parse_Empty_Logs_Not_Throws()
         {
@@ -177,14 +181,15 @@ namespace GrokNetTests
         [InlineData("122001")]
         [InlineData("122 001")]
         [InlineData("235 012")]
-        public void LoadCustomPatterns(string zipcode)
+        public void Load_Custom_Patterns(string zipcode)
         {
             // Arrange
             const string email = "Bob.Davis@microsoft.com";
-            var sut = new Grok("%{ZIPCODE:zipcode}:%{EMAILADDRESS:email}");
+
+            var sut = new Grok("%{ZIPCODE:zipcode}:%{EMAILADDRESS:email}", ReadCustomFile());
 
             // Act
-            var grokResult = sut.Parse($"{zipcode}:{email}");
+            GrokResult grokResult = sut.Parse($"{zipcode}:{email}");
 
             // Assert
             Assert.Equal(zipcode, grokResult[0].Value);
@@ -192,18 +197,18 @@ namespace GrokNetTests
         }
 
         [Fact]
-        public void LoadWrongCustomPatterns()
+        public void Load_Wrong_Custom_Patterns()
         {
             // Arrange
             const string client = "192.168.1.1";
             const string duration = "1";
 
-            var sut = new Grok("%{WRONGPATTERN1:duration}:%{WRONGPATTERN2:client}");
+            var sut = new Grok("%{WRONGPATTERN1:duration}:%{WRONGPATTERN2:client}", ReadCustomFile());
 
             try
             {
                 // Act
-                var grokResult = sut.Parse($"{duration}:{client}");
+                GrokResult grokResult = sut.Parse($"{duration}:{client}");
 
                 // Assert (checks if regex is invalid)
                 Assert.Equal("", grokResult[0].Value);
@@ -212,19 +217,19 @@ namespace GrokNetTests
             catch
             {
                 // Assert (checks if pattern is invalid)
-                Assert.Throws<System.FormatException>(() => sut.Parse($"{duration}:{client}"));
+                Assert.Throws<FormatException>(() => sut.Parse($"{duration}:{client}"));
             }
         }
 
         [Fact]
-        public void ParsePatternWithTypeShouldParseToTheSpecifiedType()
+        public void Parse_Pattern_With_Type_Should_Parse_To_Specified_Type()
         {
             // Arrange
             const int intValue = 28;
-            var dateTime = new DateTime(2010, 10, 10);
             const double floatValue = 3000.5F;
+            var dateTime = new DateTime(2010, 10, 10);
 
-            var sut = new Grok("%{INT:int_value:int}:%{DATESTAMP:date_time:datetime}:%{FLOAT:float_value:float}");
+            var sut = new Grok("%{INT:int_value:int}:%{DATESTAMP:date_time:datetime}:%{FLOAT:float_value:float}", ReadCustomFile());
 
             // Act
             GrokResult grokResult = sut.Parse($"{intValue}:{dateTime:dd-MM-yyyy HH:mm:ss}:{floatValue}");
@@ -247,10 +252,10 @@ namespace GrokNetTests
         [InlineData("INT", "2147483648", "int")]
         [InlineData("DATESTAMP", "11-31-2021 02:08:58", "datetime")]
         [InlineData("WRONGFLOAT", "notanumber", "float")]
-        public void ParseWithTypeParseExceptionShouldIgnoreType(string regex, string parse, string toType)
+        public void Parse_With_Type_Parse_Exception_Should_Ignore_Type(string regex, string parse, string toType)
         {
             // Arrange
-            var sut = new Grok($"%{{{regex}:{nameof(parse)}:{toType}}}");
+            var sut = new Grok($"%{{{regex}:{nameof(parse)}:{toType}}}", ReadCustomFile());
 
             // Act
             GrokResult grokResult = sut.Parse($"{parse}");

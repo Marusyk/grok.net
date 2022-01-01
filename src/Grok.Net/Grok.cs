@@ -11,7 +11,6 @@ namespace GrokNet
     public class Grok
     {
         private readonly string _grokPattern;
-        private bool _patternsLoaded;
         private readonly Dictionary<string, string> _patterns;
         private readonly Dictionary<string, string> _typeMaps;
         private Regex _compiledRegex;
@@ -26,6 +25,13 @@ namespace GrokNet
             _grokPattern = grokPattern;
             _patterns = new Dictionary<string, string>();
             _typeMaps = new Dictionary<string, string>();
+            LoadPatterns();
+        }
+
+        public Grok(string grokPattern, Stream customPatterns)
+            :this(grokPattern)
+        {
+            LoadCustomPatterns(customPatterns);
         }
 
         public GrokResult Parse(string text)
@@ -54,11 +60,6 @@ namespace GrokNet
 
         private void ParseGrokString()
         {
-            if (!_patternsLoaded)
-            {
-                LoadPatterns();
-            }
-
             string pattern = string.Empty;
             bool flag;
 
@@ -125,27 +126,15 @@ namespace GrokNet
                     }
                 }
             }
-
-            LoadCustomPatterns();
-
-            _patternsLoaded = true;
         }
 
-        private void LoadCustomPatterns()
+        private void LoadCustomPatterns(Stream customPatterns)
         {
-            var directoryInfo = new DirectoryInfo("Patterns");
-            if (!directoryInfo.Exists)
+            using (var sr = new StreamReader(customPatterns, Encoding.UTF8, true))
             {
-                return;
-            }
-            foreach (FileInfo file in directoryInfo.GetFiles("*", SearchOption.AllDirectories))
-            {
-                using (StreamReader sr = file.OpenText())
+                while (!sr.EndOfStream)
                 {
-                    while (!sr.EndOfStream)
-                    {
-                        ProcessPatternLine(sr.ReadLine());
-                    }
+                    ProcessPatternLine(sr.ReadLine());
                 }
             }
         }
@@ -200,9 +189,9 @@ namespace GrokNet
         {
             Group group = match.Groups[1];
 
-            if (_patterns.TryGetValue(group.Value, out var str))
+            if (_patterns.TryGetValue(group.Value, out _))
             {
-                str = _patterns[group.Value];
+                string str = _patterns[group.Value];
                 return $"({str})";
             }
 
