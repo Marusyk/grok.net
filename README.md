@@ -5,11 +5,9 @@
 # grok.net
 Cross platform .NET grok implementation as a NuGet package
 
- [![Windows Build](https://github.com/Marusyk/grok.net/actions/workflows/Windows.yml/badge.svg)](https://github.com/Marusyk/grok.net/actions/workflows/Windows.yml)
- [![Linux Build](https://github.com/Marusyk/grok.net/actions/workflows/Linux.yml/badge.svg)](https://github.com/Marusyk/grok.net/actions/workflows/Linux.yml)
- [![MacOs Build](https://github.com/Marusyk/grok.net/actions/workflows/MacOS.yml/badge.svg)](https://github.com/Marusyk/grok.net/actions/workflows/MacOS.yml)
+ [![Build](https://github.com/Marusyk/grok.net/actions/workflows/builds.yml/badge.svg?branch=main)](https://github.com/Marusyk/grok.net/actions/workflows/builds.yml)
 
- [![GitHub release](https://badge.fury.io/gh/Marusyk%2Fgrok.net.svg)](https://github.com/Marusyk/grok.net/releases/tag/1.0.1)
+ [![GitHub release](https://badge.fury.io/gh/Marusyk%2Fgrok.net.svg)](https://github.com/Marusyk/grok.net/releases/tag/1.1.0)
  [![NuGet version](https://badge.fury.io/nu/grok.net.svg)](https://badge.fury.io/nu/grok.net)
  [![Nuget](https://img.shields.io/nuget/dt/grok.net.svg)](https://www.nuget.org/packages/Grok.Net)
  [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/Marusyk/grok.net/blob/main/LICENSE) 
