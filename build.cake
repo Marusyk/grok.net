@@ -99,7 +99,8 @@ Task("NuGetPush")
     .WithCriteria(!string.IsNullOrWhiteSpace(nugetApiKey))
     .Does(() =>
 {
-    DotNetNuGetPush(artifactsDir.CombineWithFilePath("*.nupkg").FullPath, new DotNetCoreNuGetPushSettings
+    var packages = GetFiles(string.Concat(artifactsDir, "/", "*.nupkg"));
+    DotNetNuGetPush(packages.First(), new DotNetCoreNuGetPushSettings
     {
         Source = nugetApiUrl,
         ApiKey = nugetApiKey
