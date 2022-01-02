@@ -1,4 +1,4 @@
-#addin nuget:?package=Cake.Coveralls&version=1.1.0
+#addin nuget:?package=Cake.Coveralls&version=1.0.0
 #addin nuget:?package=Cake.Coverlet&version=2.5.4
 
 #tool nuget:?package=coveralls.io&version=1.4.2
