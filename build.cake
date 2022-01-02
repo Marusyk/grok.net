@@ -80,7 +80,7 @@ Task("UploadTestReport")
 });
 
 Task("NuGetPack")
-    .IsDependentOn("UploadTestReport")
+    .IsDependentOn("Test")
     .Does(() =>
 {
     DotNetPack(projectFileMain, new DotNetCorePackSettings

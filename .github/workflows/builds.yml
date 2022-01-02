@@ -38,17 +38,17 @@ jobs:
       with:
         target: Test
 
-  build-linux:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
+  # build-linux:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - uses: actions/checkout@v2
 
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 6.0.x
+  #   - name: Setup .NET
+  #     uses: actions/setup-dotnet@v1
+  #     with:
+  #       dotnet-version: 6.0.x
 
-    - name: Cake Action
-      uses: cake-build/cake-action@v1.4.0
-      with:
-        target: Test
+  #   - name: Cake Action
+  #     uses: cake-build/cake-action@v1.4.0
+  #     with:
+  #       target: Test
