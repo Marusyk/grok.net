@@ -8,7 +8,7 @@ namespace GrokNetTests
     public class UnitTests
     {
         private static Stream ReadCustomFile() =>
-            File.OpenRead(@"Patterns\grok-custom-patterns");
+            File.OpenRead($"Patterns{Path.DirectorySeparatorChar}grok-custom-patterns");
 
         [Fact]
         public void Parse_Empty_Logs_Not_Throws()
