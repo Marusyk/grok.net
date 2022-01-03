@@ -1,8 +1,4 @@
-<p align="center">
-  <img src="Grok.png" alt="Grok" width="250"/>
-</p>
-
-# grok.net
+![Grok](https://github.com/Marusyk/grok.net/raw/main/Grok.png)
 Cross platform .NET grok implementation as a NuGet package
 
  [![Build](https://github.com/Marusyk/grok.net/actions/workflows/builds.yml/badge.svg?branch=main)](https://github.com/Marusyk/grok.net/actions/workflows/builds.yml)
