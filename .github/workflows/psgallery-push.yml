@@ -1,0 +1,30 @@
+name: Push PowerShell module
+
+on:
+  workflow_dispatch:
+  release:
+    types: [published]
+
+jobs:
+  
+  publish:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 6.0.x
+
+    - name: Cake Action
+      uses: cake-build/cake-action@v1.4.0
+      with:
+        target: PowerShellPack
+
+    - name: Publish
+      env:
+          PS_NUGET_API_KEY: ${{ secrets.PS_NUGET_API_KEY }}
+      shell: pwsh
+      run: |
+          Publish-Module -Path ./artifacts/Grok -NuGetApiKey $env:PS_NUGET_API_KEY -Force

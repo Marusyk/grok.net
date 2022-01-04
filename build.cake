@@ -107,6 +107,17 @@ Task("NuGetPush")
     });
 });
 
+Task("PowerShellPack")
+    .IsDependentOn("Test")
+    .Does(() =>
+{
+    var srcDir = projectFilePowerShell.Path.GetDirectory().FullPath;
+    var buildDir = string.Concat(srcDir, "/bin/", configuration, "/netstandard2.0");
+    var destDir = artifactsDir.FullPath + "/Grok";
+    EnsureDirectoryExists(destDir);
+    CopyDirectory(buildDir, destDir);
+});
+
 Task("Default")
     .IsDependentOn("Test");
 
