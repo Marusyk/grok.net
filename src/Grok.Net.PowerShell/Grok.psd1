@@ -7,7 +7,7 @@ RootModule = 'Grok.Net.PowerShell.dll'
 ModuleVersion = '1.1.0'
 
 # ID used to uniquely identify this module
-GUID = '84fc90ab-74f4-4dbf-ade8-478538217cc8'
+GUID = 'ca572b01-60d4-4025-b7e2-fb487ab53f08'
 
 # Author of this module
 Author = 'Mohamed Eddami'
