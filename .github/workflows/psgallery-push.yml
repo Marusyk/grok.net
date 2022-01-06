@@ -19,12 +19,7 @@ jobs:
 
     - name: Cake Action
       uses: cake-build/cake-action@v1.4.0
-      with:
-        target: PowerShellPack
-
-    - name: Publish
       env:
           PS_NUGET_API_KEY: ${{ secrets.PS_NUGET_API_KEY }}
-      shell: pwsh
-      run: |
-          Publish-Module -Path ./artifacts/Grok -NuGetApiKey $env:PS_NUGET_API_KEY -Force
+      with:
+        target: PsGalleryPush
