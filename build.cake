@@ -1,5 +1,6 @@
 #addin nuget:?package=Cake.Coveralls&version=1.0.0
 #addin nuget:?package=Cake.Coverlet&version=2.5.4
+#addin nuget:?package=Cake.Powershell&version=1.0.1&loaddependencies=true
 
 #tool nuget:?package=coveralls.io&version=1.4.2
 
@@ -9,12 +10,16 @@ var configuration = Argument("configuration", "Release");
 var coverallsRepoToken = EnvironmentVariable("COVERALLS_REPO_TOKEN");
 var nugetApiKey = EnvironmentVariable("NUGET_API_KEY");
 var nugetApiUrl = EnvironmentVariable("NUGET_API_URL");
+var psNugetApiKey = EnvironmentVariable("PS_NUGET_API_KEY");
 
 DirectoryPath artifactsDir = Directory("./artifacts/");
 var testResultsDir = artifactsDir.Combine("test-results");
+var psModuleDir = artifactsDir.Combine("Grok");
 var testCoverageOutputFilePath = testResultsDir.CombineWithFilePath("OpenCover.xml");
+
 var projectFileMain = File("./src/Grok.Net/Grok.Net.csproj");
 var projectFilePowerShell = File("./src/Grok.Net.PowerShell/Grok.Net.PowerShell.csproj");
+
 
 Task("Clean")
     .Does(() =>
@@ -105,6 +110,36 @@ Task("NuGetPush")
         Source = nugetApiUrl,
         ApiKey = nugetApiKey
     });
+});
+
+Task("PsModulePack")
+    .IsDependentOn("Test")
+    .Does(() =>
+{
+    DotNetPublish(projectFilePowerShell, new DotNetPublishSettings
+    {
+        Configuration = configuration,
+        NoRestore = true,
+        NoBuild = true,
+        NoLogo = true,
+        OutputDirectory = psModuleDir
+    });
+});
+
+Task("PsModulePush")
+    .IsDependentOn("PsModulePack")
+    .WithCriteria(!string.IsNullOrWhiteSpace(psNugetApiKey))
+    .Does(() =>
+{
+    StartPowershellScript("Publish-Module", new PowershellSettings()
+        .WithModule("PowerShellGet")
+        .BypassExecutionPolicy()
+        .WithArguments(args =>
+        {
+            args.Append("Path", psModuleDir.FullPath)
+                .AppendSecret("NuGetApiKey", psNugetApiKey)
+                .Append("Force", "");
+        }));
 });
 
 Task("Default")
