@@ -22,5 +22,4 @@ jobs:
       env:
           PS_NUGET_API_KEY: ${{ secrets.PS_NUGET_API_KEY }}
       with:
-        script-path: powershell.cake
-        target: PsGalleryPush
+        target: PsModulePush
