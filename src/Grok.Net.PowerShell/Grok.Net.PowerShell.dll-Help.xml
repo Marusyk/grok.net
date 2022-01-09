@@ -31,7 +31,11 @@
                 </command:parameter>
 
                 <command:parameter required="true" pipelineInput="false" position="named">
-                    <maml:name>Filter</maml:name>
+                    <maml:name>GrokPattern</maml:name>
+                </command:parameter>
+
+                <command:parameter required="false" pipelineInput="false" position="named">
+                    <maml:name>CustomPatterns</maml:name>
                 </command:parameter>
 
                 <command:parameter required="false" pipelineInput="false" position="named">
@@ -62,7 +66,11 @@
                 </command:parameter>
 
                 <command:parameter required="true" pipelineInput="false" position="named">
-                    <maml:name>Filter</maml:name>
+                    <maml:name>GrokPattern</maml:name>
+                </command:parameter>
+
+                <command:parameter required="false" pipelineInput="false" position="named">
+                    <maml:name>CustomPatterns</maml:name>
                 </command:parameter>
 
                 <command:parameter required="false" pipelineInput="false" position="named">
@@ -107,7 +115,12 @@
             </command:parameter>
 
             <command:parameter required="true" pipelineInput="false" position="named">
-                <maml:name>Filter</maml:name>
+                <maml:name>GrokPattern</maml:name>
+                <dev:type>System.String</dev:type>
+            </command:parameter>
+
+            <command:parameter required="false" pipelineInput="false" position="named">
+                <maml:name>CustomPatterns</maml:name>
                 <dev:type>System.String</dev:type>
             </command:parameter>
 
@@ -199,7 +212,7 @@
 
         <command:examples>
             <command:example>
-                <dev:code>grok -i "55.3.244.1 GET 0.043" -f "%{IP:client} %{WORD:method} %{NUMBER:duration}"</dev:code>
+                <dev:code>grok -i "55.3.244.1 GET 0.043" -g "%{IP:client} %{WORD:method} %{NUMBER:duration}"</dev:code>
             </command:example>
         </command:examples>
 

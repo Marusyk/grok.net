@@ -13,7 +13,7 @@ namespace GrokNetTests
             var cmdlet = new GrokCmdlet
             {
                 Input = "55.3.244.1 GET /index.html 15824 0.043",
-                Filter = "%{NUMBER:duration} %{IP:client}"
+                GrokPattern = "%{NUMBER:duration} %{IP:client}"
             };
             
             // Act

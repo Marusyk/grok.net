@@ -14,18 +14,24 @@ namespace GrokNet.PowerShell
         [Parameter(ParameterSetName = "default", Mandatory = true, ValueFromPipeline = true)]
         [Alias("i")]
         public string Input { get; set; }
-        
-        [ValidateLength(1, int.MaxValue)]
-        [Parameter(ParameterSetName = "file", Mandatory = true, ValueFromPipeline = true)]
-        [Alias("p")]
-        public string Path { get; set; }
 
         [ValidateLength(1, int.MaxValue)]
         [Parameter(ParameterSetName = "default", Mandatory = true)]
         [Parameter(ParameterSetName = "file", Mandatory = true)]
-        [Alias("f")]
-        public string Filter { get; set; }
-        
+        [Alias("g")]
+        public string GrokPattern { get; set; }
+
+        [ValidateLength(1, int.MaxValue)]
+        [Parameter(ParameterSetName = "file", ValueFromPipeline = true)]
+        [Alias("p")]
+        public string Path { get; set; }
+
+        [ValidateLength(1, int.MaxValue)]
+        [Parameter(ParameterSetName = "default")]
+        [Parameter(ParameterSetName = "file")]
+        [Alias("c")]
+        public string CustomPatterns { get; set; }
+
         [Parameter(ParameterSetName = "default")]
         [Parameter(ParameterSetName = "file")]
         [Alias("o")]
@@ -97,11 +103,24 @@ namespace GrokNet.PowerShell
             }
         }
 
+        private Grok GrokInstance()
+        {
+            if (CustomPatterns is null)
+            {
+                return new Grok(GrokPattern);
+            }
+
+            using (FileStream fileStream = File.OpenRead(CustomPatterns))
+            {
+                return new Grok(GrokPattern, fileStream);
+            }
+        }
+
         private void ProcessString(List<Dictionary<string, object>> result)
         {
-            var grok = new Grok(Filter);
+            Grok grok = GrokInstance();
 
-            var lines = Input.Split(new[] {Environment.NewLine},
+            var lines = Input.Split(new[] { Environment.NewLine },
                 IgnoreEmptyLines.IsPresent ? StringSplitOptions.RemoveEmptyEntries : StringSplitOptions.None);
 
             foreach (string line in lines)
@@ -112,7 +131,7 @@ namespace GrokNet.PowerShell
 
         private void ProcessFile(List<Dictionary<string, object>> result)
         {
-            var grok = new Grok(Filter);
+            Grok grok = GrokInstance();
 
             using (FileStream fileStream = File.OpenRead(Path))
             using (var streamReader = new StreamReader(fileStream, Encoding.UTF8, true))
