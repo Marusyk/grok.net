@@ -3,12 +3,14 @@
 Cross platform .NET grok implementation as a NuGet package
 
  [![Build](https://github.com/Marusyk/grok.net/actions/workflows/builds.yml/badge.svg?branch=main)](https://github.com/Marusyk/grok.net/actions/workflows/builds.yml)
-
  [![GitHub release](https://badge.fury.io/gh/Marusyk%2Fgrok.net.svg)](https://github.com/Marusyk/grok.net/releases/tag/v1.1.0)
- [![NuGet version](https://badge.fury.io/nu/grok.net.svg)](https://badge.fury.io/nu/grok.net)
- [![Nuget](https://img.shields.io/nuget/dt/grok.net.svg)](https://www.nuget.org/packages/Grok.Net)
  [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/Marusyk/grok.net/blob/main/LICENSE) 
  [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/Marusyk/grok.net/blob/main/CONTRIBUTING.md)
+ 
+ [![NuGet version](https://badge.fury.io/nu/grok.net.svg)](https://badge.fury.io/nu/grok.net)
+ [![Nuget](https://img.shields.io/nuget/dt/grok.net.svg)](https://www.nuget.org/packages/Grok.Net)
+ [![PowerShell Gallery Version](https://img.shields.io/powershellgallery/v/Grok)](https://www.powershellgallery.com/packages/Grok)
+ [![PowerShell Gallery](https://img.shields.io/powershellgallery/dt/Grok)](https://www.powershellgallery.com/packages/Grok)
 
 # Code Coverage
 
@@ -16,11 +18,19 @@ Cross platform .NET grok implementation as a NuGet package
 
 # How to Install
 
-You can directly install this library from [Nuget](http://nuget.org). There is package:
+Install as a library from [Nuget](http://nuget.org):
 
-**[grok.net](https://www.nuget.org/packages/Grok.Net)**
+**[Grok.Net](https://www.nuget.org/packages/Grok.Net)**
 
     PM> Install-Package Grok.Net
+    
+Install as a PowerShell module from [PowershellGallery](https://www.powershellgallery.com):
+
+**[Grok](https://www.powershellgallery.com/packages/Grok)**
+
+```powershell
+Install-Module -Name Grok
+```
 
 # What is grok
 
@@ -100,6 +110,15 @@ FileStream customPatterns = System.IO.File.OpenRead(@"Patterns\grok-custom-patte
 Grok grok = new Grok("%{ZIPCODE:zipcode}:%{EMAILADDRESS:email}", customPatterns);
 var grokResult = grok.Parse($"122001:Bob.Davis@microsoft.com");
 ```
+
+# PowerShell Module
+
+Install and use the Grok as a PowerShell module
+
+```powershell
+grok -i "06-21-19 21:00:13:589241;15;INFO;main;DECODED: 775233900043 DECODED BY: 18500738 DISTANCE: 1.5165" -g "%{MONTHDAY:month}-%{MONTHDAY:day}-%{MONTHDAY:year} %{TIME:timestamp};%{WORD:id};%{LOGLEVEL:loglevel};%{WORD:func};%{GREEDYDATA:msg}"
+```
+To get help use `help grok` command
 
 ## Build
 
