@@ -24,11 +24,6 @@ namespace GrokNet.PowerShell
 
         public static string GetCsvOutput(List<Dictionary<string, object>> records, string delimiter)
         {
-            if (records.Count == 0)
-            {
-                return string.Empty;
-            }
-
             Dictionary<string, object>[] notNullRecords = records.Where(r => r != null).ToArray();
             if (!notNullRecords.Any())
             {
