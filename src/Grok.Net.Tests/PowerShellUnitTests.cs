@@ -8,7 +8,6 @@ using GrokNet;
 using GrokNet.PowerShell;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using NJsonSchema.Infrastructure;
 using Xunit;
 
 namespace GrokNetTests
@@ -152,8 +151,10 @@ namespace GrokNetTests
             var result = cmdlet.Invoke().OfType<string>().FirstOrDefault();
 
             // Assert
+            Assert.NotNull(result);
             var json = JsonConvert.DeserializeObject<JArray>(result);
 
+            Assert.NotNull(json);
             Assert.Single(json);
 
             var element = json.First();
@@ -200,12 +201,12 @@ namespace GrokNetTests
 
             // Assert
             Assert.NotNull(result);
-            
+
             var json = JsonConvert.DeserializeObject<JArray>(result);
-            
+
             Assert.NotNull(json);
             Assert.True(json.Count == 3);
-            
+
             var emptyElement = json[1] as JValue;
             Assert.Null(emptyElement?.Value);
         }
@@ -253,7 +254,7 @@ namespace GrokNetTests
 
             // Assert
             Assert.NotNull(result);
-            
+
             using var reader = new StringReader(result);
             using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
             var records = csv.GetRecords<dynamic>().ToArray();
@@ -287,7 +288,7 @@ namespace GrokNetTests
 
             // Assert
             Assert.NotNull(result);
-            
+
             using var reader = new StringReader(result);
             using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
             csv.GetRecords<dynamic>();
@@ -297,6 +298,95 @@ namespace GrokNetTests
             Assert.True(string.IsNullOrWhiteSpace(lines[2]));
         }
 
-        
+        [Fact]
+        public void FileInput_JsonOutput_ValidOutput()
+        {
+            // Arrange
+            var expectedData = new Dictionary<string, string>()
+            {
+                {"client", "55.3.244.1"},
+                {"method", "GET"},
+                {"request", "/index.html"},
+                {"bytes", "15824"},
+                {"duration", "0.043"}
+            };
+
+            var path = "./Resources/example-log-file";
+            var pattern =
+                string.Format("%{{IP:{0}}} %{{WORD:{1}}} %{{URIPATHPARAM:{2}}} %{{NUMBER:{3}}} %{{NUMBER:{4}}}",
+                    expectedData.Keys.ToArray());
+
+            var cmdlet = new GrokCmdlet {Path = path, GrokPattern = pattern, OutputFormat = "json"};
+
+            // Act
+            var result = cmdlet.Invoke().OfType<string>().FirstOrDefault();
+
+            // Assert
+            Assert.NotNull(result);
+
+            var json = JsonConvert.DeserializeObject<JArray>(result);
+
+            Assert.NotNull(json);
+            Assert.Single(json);
+
+            var element = json.First();
+
+            foreach (var (key, value) in expectedData)
+            {
+                Assert.NotNull(element[key]);
+                Assert.Equal(value, element[key]);
+            }
+        }
+
+        [Fact]
+        public void CustomPatternsFile_ValidOutput()
+        {
+            // Arrange
+            var path = "./Resources/grok-custom-patterns";
+            var expectedData = new Dictionary<string, string>()
+            {
+                {"zipcode", "122001"}, {"email", "contact@example.com"}
+            };
+            var input = string.Format("{0} {1}", expectedData.Values.ToArray());
+            var pattern = string.Format("%{{ZIPCODE:{0}}} %{{EMAILADDRESS:{1}}}", expectedData.Keys.ToArray());
+
+            var cmdlet = new GrokCmdlet
+            {
+                Input = input, GrokPattern = pattern, CustomPatterns = path, OutputFormat = "json"
+            };
+
+            // Act
+            var result = cmdlet.Invoke().OfType<string>().FirstOrDefault();
+
+            // Assert
+            Assert.NotNull(result);
+
+            var json = JsonConvert.DeserializeObject<JArray>(result);
+
+            Assert.NotNull(json);
+            Assert.Single(json);
+
+            var element = json.First();
+
+            foreach (var (key, value) in expectedData)
+            {
+                Assert.NotNull(element[key]);
+                Assert.Equal(value, element[key]);
+            }
+        }
+
+        [Fact]
+        public void Version_GrokNetVersion()
+        {
+            // Arrange
+            var cmdlet = new GrokCmdlet {Version = true};
+
+            // Act
+            var result = cmdlet.Invoke().OfType<string>().FirstOrDefault();
+
+            // Assert
+            var version = typeof(Grok).Assembly.GetName().Version?.ToString();
+            Assert.Equal($"Grok.Net {version}", result);
+        }
     }
 }

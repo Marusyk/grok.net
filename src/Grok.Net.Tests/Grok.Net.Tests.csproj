@@ -23,8 +23,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Patterns\grok-custom-patterns">
+
+    <None Update="Resources\grok-custom-patterns">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Resources\example-log-file">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 
