@@ -20,11 +20,18 @@ namespace GrokNet
         private static readonly Regex _grokRegexWithType = new Regex("%{(\\w+):(\\w+):(\\w+)?}", RegexOptions.Compiled);
         private static readonly Regex _grokWithoutName = new Regex("%{(\\w+)}", RegexOptions.Compiled);
 
+        public IList<(string, string)> _patternViolations;
+        public IList<(string, string)> PatternViolations => _patternViolations;
+        
         public Grok(string grokPattern)
         {
             _grokPattern = grokPattern;
             _patterns = new Dictionary<string, string>();
             _typeMaps = new Dictionary<string, string>();
+            _patternViolations = new List<(string, string)>();
+            
+            // loads custom patterns from assembly reference in default constructor...
+            // is this a good idea?
             LoadPatterns();
         }
 
@@ -32,6 +39,32 @@ namespace GrokNet
             :this(grokPattern)
         {
             LoadCustomPatterns(customPatterns);
+        }
+        
+        public Grok(string grokPattern, IEnumerable<(string, string)> customPatterns)
+            :this(grokPattern)
+        {
+            AddPatterns(customPatterns);
+        }
+
+        private void AddPatterns(IEnumerable<(string, string)> customPatterns)
+        {
+            foreach (var (key, value) in customPatterns)
+            {
+                if (ValidatePattern(value))
+                {
+                    AddPatternIfNotExists(key, value);                    
+                }
+            }
+        }
+        
+        private void AddPatternIfNotExists(string key, string value)
+        {
+            // check before adding to avoid an exception in case the same pattern is present in the custom patterns file.
+            if (!_patterns.ContainsKey(key))
+            {
+                _patterns.Add(key, value);
+            }
         }
 
         public GrokResult Parse(string text)
@@ -156,20 +189,26 @@ namespace GrokNet
             {
                 return;
             }
-            try
-            {
-                Regex.Match("", strArray[1]);
-            }
-            catch
+
+            if (!ValidatePattern(strArray[1]))
             {
                 return;
             }
+            AddPatternIfNotExists(strArray[0], strArray[1]);
+        }
 
-            // check before adding to avoid an exception in case the same pattern is present in the custom patterns file.
-            if (!_patterns.ContainsKey(strArray[0]))
+        private bool ValidatePattern(string pattern)
+        {
+            try
             {
-                _patterns.Add(strArray[0], strArray[1]);
+                _ = Regex.Match("", pattern);
             }
+            catch(Exception e)
+            {
+                _patternViolations.Add((pattern, e.Message));
+                return false;
+            }
+            return true;
         }
 
         private string ReplaceWithName(Match match)

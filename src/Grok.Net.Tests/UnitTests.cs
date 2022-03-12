@@ -195,6 +195,30 @@ namespace GrokNetTests
             Assert.Equal(zipcode, grokResult[0].Value);
             Assert.Equal(email, grokResult[1].Value);
         }
+        
+        [Theory]
+        [InlineData("122001")]
+        [InlineData("122 001")]
+        [InlineData("235 012")]
+        public void Load_Custom_Patterns_From_IEnumberable(string zipcode)
+        {
+            // Arrange
+            var customPatterns = new[]
+            {
+                ("ZIPCODE", "[1-9]{1}[0-9]{2}\\s{0,1}[0-9]{3}"), 
+                ("FLOAT", "[+-]?([0-9]*[.,])?[0-9]+"),
+            };
+            const string email = "Bob.Davis@microsoft.com";
+
+            var sut = new Grok("%{ZIPCODE:zipcode}:%{EMAILADDRESS:email}", customPatterns);
+
+            // Act
+            GrokResult grokResult = sut.Parse($"{zipcode}:{email}");
+
+            // Assert
+            Assert.Equal(zipcode, grokResult[0].Value);
+            Assert.Equal(email, grokResult[1].Value);
+        }        
 
         [Fact]
         public void Load_Wrong_Custom_Patterns()
@@ -211,6 +235,7 @@ namespace GrokNetTests
                 GrokResult grokResult = sut.Parse($"{duration}:{client}");
 
                 // Assert (checks if regex is invalid)
+                Assert.Equal(2, sut.PatternViolations.Count);
                 Assert.Equal("", grokResult[0].Value);
                 Assert.Equal("", grokResult[1].Value);
             }
