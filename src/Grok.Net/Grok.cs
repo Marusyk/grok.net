@@ -19,12 +19,13 @@ namespace GrokNet
         private static readonly Regex _grokRegex = new Regex("%{(\\w+):(\\w+)(?::\\w+)?}", RegexOptions.Compiled);
         private static readonly Regex _grokRegexWithType = new Regex("%{(\\w+):(\\w+):(\\w+)?}", RegexOptions.Compiled);
         private static readonly Regex _grokWithoutName = new Regex("%{(\\w+)}", RegexOptions.Compiled);
-
+        
         public Grok(string grokPattern)
         {
             _grokPattern = grokPattern;
             _patterns = new Dictionary<string, string>();
             _typeMaps = new Dictionary<string, string>();
+            
             LoadPatterns();
         }
 
@@ -32,6 +33,29 @@ namespace GrokNet
             :this(grokPattern)
         {
             LoadCustomPatterns(customPatterns);
+        }
+        
+        public Grok(string grokPattern, IDictionary<string,string> customPatterns)
+            :this(grokPattern)
+        {
+            AddPatterns(customPatterns);
+        }
+
+        private void AddPatterns(IDictionary<string,string> customPatterns)
+        {
+            foreach (var pattern in customPatterns)
+            {
+                AddPatternIfNotExists(pattern.Key, pattern.Value);                    
+            }
+        }
+        
+        private void AddPatternIfNotExists(string key, string value)
+        {
+            if (!_patterns.ContainsKey(key))
+            {
+                EnsurePatternIsValid(value);
+                _patterns.Add(key, value);
+            }
         }
 
         public GrokResult Parse(string text)
@@ -149,26 +173,25 @@ namespace GrokNet
             string[] strArray = line.Split(new[] { ' ' }, 2);
             if (strArray.Length != 2)
             {
-                throw new FormatException("Custom pattern was not in a correct form");
+                throw new FormatException("Pattern line was not in a correct form (two strings split by space)");
             }
 
-            if (strArray[0].Equals("#", StringComparison.OrdinalIgnoreCase))
+            if (strArray[0].StartsWith("#"))
             {
                 return;
             }
+            AddPatternIfNotExists(strArray[0], strArray[1]);
+        }
+
+        private void EnsurePatternIsValid(string pattern)
+        {
             try
             {
-                Regex.Match("", strArray[1]);
+                _ = Regex.Match("", pattern);
             }
-            catch
+            catch(Exception e)
             {
-                return;
-            }
-
-            // check before adding to avoid an exception in case the same pattern is present in the custom patterns file.
-            if (!_patterns.ContainsKey(strArray[0]))
-            {
-                _patterns.Add(strArray[0], strArray[1]);
+                throw new FormatException($"Invalid regular expression {pattern}", e);
             }
         }
 
@@ -177,12 +200,7 @@ namespace GrokNet
             Group group1 = match.Groups[2];
             Group group2 = match.Groups[1];
 
-            if (_patterns.TryGetValue(group2.Value, out var str))
-            {
-                return $"(?<{group1}>{str})";
-            }
-
-            return $"(?<{group1}>)";
+            return _patterns.TryGetValue(group2.Value, out var str) ? $"(?<{group1}>{str})" : $"(?<{group1}>)";
         }
 
         private string ReplaceWithoutName(Match match)

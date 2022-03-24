@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using GrokNet;
 using Xunit;
@@ -9,7 +10,8 @@ namespace GrokNetTests
     {
         private static Stream ReadCustomFile() =>
             File.OpenRead($"Resources{Path.DirectorySeparatorChar}grok-custom-patterns");
-
+        private static Stream ReadCustomFileWithInvalidPatterns() =>
+            File.OpenRead($"Resources{Path.DirectorySeparatorChar}grok-custom-patterns-invalid");
         [Fact]
         public void Parse_Empty_Logs_Not_Throws()
         {
@@ -127,7 +129,7 @@ namespace GrokNetTests
         [InlineData("2001:db8:85a3:0:0:8a2e:370:7334")]
         [InlineData("2001:db8:85a3::8a2e:370:7334")]
         [InlineData("::1")] // Loopback
-        [InlineData("::")]  // Default route
+        [InlineData("::")] // Default route
         public void Parse_IPv6_Pattern(string ipAddress)
         {
             // Arrange
@@ -196,29 +198,34 @@ namespace GrokNetTests
             Assert.Equal(email, grokResult[1].Value);
         }
 
-        [Fact]
-        public void Load_Wrong_Custom_Patterns()
+        [Theory]
+        [InlineData("122001")]
+        [InlineData("122 001")]
+        [InlineData("235 012")]
+        public void Load_Custom_Patterns_From_IDictionary(string zipcode)
         {
             // Arrange
-            const string client = "192.168.1.1";
-            const string duration = "1";
-
-            var sut = new Grok("%{WRONGPATTERN1:duration}:%{WRONGPATTERN2:client}", ReadCustomFile());
-
-            try
+            var customPatterns = new Dictionary<string, string>
             {
-                // Act
-                GrokResult grokResult = sut.Parse($"{duration}:{client}");
+                { "ZIPCODE", "[1-9]{1}[0-9]{2}\\s{0,1}[0-9]{3}" }, 
+                { "FLOAT", "[+-]?([0-9]*[.,]}?[0-9]+)" }
+            };
+            const string email = "Bob.Davis@microsoft.com";
 
-                // Assert (checks if regex is invalid)
-                Assert.Equal("", grokResult[0].Value);
-                Assert.Equal("", grokResult[1].Value);
-            }
-            catch
-            {
-                // Assert (checks if pattern is invalid)
-                Assert.Throws<FormatException>(() => sut.Parse($"{duration}:{client}"));
-            }
+            var sut = new Grok("%{ZIPCODE:zipcode}:%{EMAILADDRESS:email}", customPatterns);
+
+            // Act
+            GrokResult grokResult = sut.Parse($"{zipcode}:{email}");
+
+            // Assert
+            Assert.Equal(zipcode, grokResult[0].Value);
+            Assert.Equal(email, grokResult[1].Value);
+        }
+
+        [Fact]
+        public void Load_Invalid_Custom_Patterns()
+        {
+            Assert.Throws<FormatException>(() => new Grok("%{WRONGPATTERN1:duration}:%{WRONGPATTERN2:client}", ReadCustomFileWithInvalidPatterns()));
         }
 
         [Fact]
@@ -247,7 +254,7 @@ namespace GrokNetTests
             Assert.Equal(floatValue, grokResult[2].Value);
             Assert.IsType<double>(grokResult[2].Value); // Float converts to double actually
         }
-        
+
         [Theory]
         [InlineData("INT", "2147483648", "int")]
         [InlineData("DATESTAMP", "11-31-2021 02:08:58", "datetime")]
@@ -264,5 +271,6 @@ namespace GrokNetTests
             Assert.Equal(nameof(parse), grokResult[0].Key);
             Assert.Equal(parse, grokResult[0].Value);
         }
+        
     }
 }

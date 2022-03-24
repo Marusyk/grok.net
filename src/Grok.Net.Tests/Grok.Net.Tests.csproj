@@ -27,6 +27,9 @@
     <None Update="Resources\grok-custom-patterns">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Resources\grok-custom-patterns-invalid">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Resources\example-log-file">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
