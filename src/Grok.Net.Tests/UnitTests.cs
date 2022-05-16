@@ -271,6 +271,17 @@ namespace GrokNetTests
             Assert.Equal(nameof(parse), grokResult[0].Key);
             Assert.Equal(parse, grokResult[0].Value);
         }
-        
+
+        [Fact]
+        public void Exception_When_Parsing_NullGrokPattern()
+        {
+            // Arrange
+            const string grokPattern = null;
+            const string logs = "";
+            var sut = new Grok(grokPattern);
+
+            // Act, Assert
+            Assert.Throws<ArgumentNullException>(() => sut.Parse(logs));
+        }
     }
 }
