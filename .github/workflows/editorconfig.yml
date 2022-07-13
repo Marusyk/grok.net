@@ -17,7 +17,7 @@ jobs:
       run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
 
     - name: EditorConfig-Action
-      uses: zbeekman/EditorConfig-Action@master
+      uses: FarzamMohammadi/EditorConfig-Action@master
       env:
         # Only lint files changed in pull request
         ALWAYS_LINT_ALL_FILES: false
