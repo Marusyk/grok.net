@@ -3,6 +3,8 @@ name: PR Audit
 on:
   pull_request:
     branches: [ main ]
+  push:
+    branches: [ main ]
 
 jobs:
 
