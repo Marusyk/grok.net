@@ -95,6 +95,9 @@ foreach (var item in grokResult)
 # Custom grok patterns
 
 There is the possibility to add your own patterns.
+
+## using file
+
 Create a file and write the pattern you need as the pattern name, space, then the regexp for that pattern.
 
 For example, Patterns\grok-custom-patterns:
@@ -109,6 +112,29 @@ then load the file and pass the stream to Grok:
 FileStream customPatterns = System.IO.File.OpenRead(@"Patterns\grok-custom-patterns");
 Grok grok = new Grok("%{ZIPCODE:zipcode}:%{EMAILADDRESS:email}", customPatterns);
 var grokResult = grok.Parse($"122001:Bob.Davis@microsoft.com");
+```
+
+## using in-memory
+
+Define a collection of patterns
+
+```csharp
+var custom = new Dictionary<string, string>
+{
+     {"BASE64", "(?=(.{4})*$)[A-Za-z0-9+/]*={0,2}$"}
+};
+```
+
+and use it as follows
+
+```csharp
+var grok = new Grok("Basic %{BASE64:credentials}", custom);
+GrokResult grokResult = grok.Parse("Basic ZGV2b3BzOjhCN0I5NDJCLTBGRjQtNDYxOC05RjkzLUMzOUI5MTU2RDY3OA==");
+
+foreach (GrokItem item in grokResult)
+{
+    Console.WriteLine($"{item.Key} : {item.Value}");
+}
 ```
 
 # PowerShell Module
