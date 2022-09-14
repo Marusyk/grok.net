@@ -129,12 +129,7 @@ and use it as follows
 
 ```csharp
 var grok = new Grok("Basic %{BASE64:credentials}", custom);
-GrokResult grokResult = grok.Parse("Basic ZGV2b3BzOjhCN0I5NDJCLTBGRjQtNDYxOC05RjkzLUMzOUI5MTU2RDY3OA==");
-
-foreach (GrokItem item in grokResult)
-{
-    Console.WriteLine($"{item.Key} : {item.Value}");
-}
+GrokResult grokResult = grok.Parse("Basic YWRtaW46cGEkJHdvcmQ=");
 ```
 
 # PowerShell Module
