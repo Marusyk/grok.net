@@ -13,6 +13,7 @@
     <RepositoryUrl>https://github.com/Marusyk/grok.net</RepositoryUrl>
     <PackageTags>grok;grok-parser;grok-patterns;grokking;c-sharp-library</PackageTags>
     <EnablePackageValidation>true</EnablePackageValidation>
+    <PackageValidationBaselineVersion>1.1.0</PackageValidationBaselineVersion>
   </PropertyGroup>
 
   <PropertyGroup>
