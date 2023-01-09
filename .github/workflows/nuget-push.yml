@@ -17,18 +17,17 @@ jobs:
       with:
         dotnet-version: 6.0.x
 
+    - name: Restore tools
+      run: dotnet tool restore
+
     - name: NuGet package
-      uses: cake-build/cake-action@v1.4.0
+      run: dotnet cake ./build.cake --Target NuGetPush
       env:
         NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
         NUGET_API_URL: ${{ secrets.NUGET_API_URL }}
-      with:
-        target: NuGetPush
 
     - name: GitHub package
-      uses: cake-build/cake-action@v1.4.0
+      run: dotnet cake ./build.cake --Target NuGetPush
       env:
         NUGET_API_KEY: ${{ secrets.GH_NUGET_API_KEY }}
         NUGET_API_URL: ${{ secrets.GH_NUGET_API_URL }}
-      with:
-        target: NuGetPush

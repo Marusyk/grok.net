@@ -1,6 +1,6 @@
-#addin nuget:?package=Cake.Coveralls&version=1.0.0
-#addin nuget:?package=Cake.Coverlet&version=2.5.4
-#addin nuget:?package=Cake.Powershell&version=1.0.1&loaddependencies=true
+#addin nuget:?package=Cake.Coveralls&version=1.1.0
+#addin nuget:?package=Cake.Coverlet&version=3.0.4
+#addin nuget:?package=Cake.Powershell&version=2.0.0&loaddependencies=true
 
 #tool nuget:?package=coveralls.io&version=1.4.2
 
@@ -54,13 +54,13 @@ Task("Test")
     .IsDependentOn("Build")
     .Does(() =>
 {
-    var settings = new DotNetCoreTestSettings
+    var settings = new DotNetTestSettings
     {
         Configuration = configuration,
         NoLogo = true
     };
 
-    DotNetCoreTest("./src/Grok.Net.Tests/Grok.Net.Tests.csproj", settings, new CoverletSettings
+    DotNetTest("./src/Grok.Net.Tests/Grok.Net.Tests.csproj", settings, new CoverletSettings
     {
         CollectCoverage = true,
         CoverletOutputFormat = CoverletOutputFormat.opencover,
@@ -88,7 +88,7 @@ Task("NuGetPack")
     .IsDependentOn("Test")
     .Does(() =>
 {
-    DotNetPack(projectFileMain, new DotNetCorePackSettings
+    DotNetPack(projectFileMain, new DotNetPackSettings
     {
         Configuration = configuration,
         NoRestore = true,
@@ -105,7 +105,7 @@ Task("NuGetPush")
     .Does(() =>
 {
     var packages = GetFiles(string.Concat(artifactsDir, "/", "*.nupkg"));
-    DotNetNuGetPush(packages.First(), new DotNetCoreNuGetPushSettings
+    DotNetNuGetPush(packages.First(), new DotNetNuGetPushSettings
     {
         Source = nugetApiUrl,
         ApiKey = nugetApiKey

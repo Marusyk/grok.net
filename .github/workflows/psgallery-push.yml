@@ -17,9 +17,11 @@ jobs:
       with:
         dotnet-version: 6.0.x
 
+    - name: Restore tools
+      run: dotnet tool restore
+
     - name: Cake Action
-      uses: cake-build/cake-action@v1.4.0
+      run: dotnet cake ./build.cake --Target PsModulePush
       env:
           PS_NUGET_API_KEY: ${{ secrets.PS_NUGET_API_KEY }}
-      with:
-        target: PsModulePush
+          
