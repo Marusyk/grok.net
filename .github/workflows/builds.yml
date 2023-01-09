@@ -18,10 +18,11 @@ jobs:
       with:
         dotnet-version: 6.0.x
 
-    - name: Cake Action
-      uses: cake-build/cake-action@v1.4.0
-      with:
-        target: Test
+    - name: Restore tools
+      run: dotnet tool restore
+
+    - name: Run Cake script
+      run: dotnet cake ./build.cake --Target Test
   
 #   build-macos:
 #     runs-on: macos-latest
@@ -48,7 +49,8 @@ jobs:
       with:
         dotnet-version: 6.0.x
 
-    - name: Cake Action
-      uses: cake-build/cake-action@v1.4.0
-      with:
-        target: Test
+    - name: Restore tools
+      run: dotnet tool restore
+
+    - name: Run Cake script
+      run: dotnet cake ./build.cake --Target Test
