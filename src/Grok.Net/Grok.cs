@@ -15,28 +15,30 @@ namespace GrokNet
         private readonly Dictionary<string, string> _typeMaps;
         private Regex _compiledRegex;
         private List<string> _groupNames;
+        private RegexOptions _regexOptions;
 
         private static readonly Regex _grokRegex = new Regex("%{(\\w+):(\\w+)(?::\\w+)?}", RegexOptions.Compiled);
         private static readonly Regex _grokRegexWithType = new Regex("%{(\\w+):(\\w+):(\\w+)?}", RegexOptions.Compiled);
         private static readonly Regex _grokWithoutName = new Regex("%{(\\w+)}", RegexOptions.Compiled);
         
-        public Grok(string grokPattern)
+        public Grok(string grokPattern, RegexOptions options = RegexOptions.Compiled | RegexOptions.ExplicitCapture)
         {
             _grokPattern = grokPattern;
             _patterns = new Dictionary<string, string>();
             _typeMaps = new Dictionary<string, string>();
+            _regexOptions = options;
             
             LoadPatterns();
         }
 
-        public Grok(string grokPattern, Stream customPatterns)
-            :this(grokPattern)
+        public Grok(string grokPattern, Stream customPatterns, RegexOptions options = RegexOptions.Compiled | RegexOptions.ExplicitCapture)
+            :this(grokPattern, options)
         {
             LoadCustomPatterns(customPatterns);
         }
         
-        public Grok(string grokPattern, IDictionary<string,string> customPatterns)
-            :this(grokPattern)
+        public Grok(string grokPattern, IDictionary<string,string> customPatterns, RegexOptions options = RegexOptions.Compiled | RegexOptions.ExplicitCapture)
+            :this(grokPattern, options)
         {
             AddPatterns(customPatterns);
         }
@@ -107,7 +109,7 @@ namespace GrokNet
 
             } while (!flag);
 
-            _compiledRegex = new Regex(pattern, RegexOptions.Compiled | RegexOptions.ExplicitCapture);
+            _compiledRegex = new Regex(pattern, _regexOptions);
             _groupNames = _compiledRegex.GetGroupNames().ToList();
         }
 
