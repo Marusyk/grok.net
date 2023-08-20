@@ -6,7 +6,7 @@ on:
     types: [published]
 
 jobs:
-  
+
   publish:
     runs-on: windows-latest
     steps:

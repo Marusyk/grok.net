@@ -23,7 +23,7 @@ jobs:
 
     - name: Run Cake script
       run: dotnet cake ./build.cake --Target Test
-  
+
 #   build-macos:
 #     runs-on: macos-latest
 #     steps:

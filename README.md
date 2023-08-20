@@ -2,15 +2,15 @@
 
 Cross platform .NET grok implementation as a NuGet package
 
- [![Build](https://github.com/Marusyk/grok.net/actions/workflows/builds.yml/badge.svg?branch=main)](https://github.com/Marusyk/grok.net/actions/workflows/builds.yml)
- [![GitHub release](https://badge.fury.io/gh/Marusyk%2Fgrok.net.svg)](https://github.com/Marusyk/grok.net/releases/tag/v1.1.0)
- [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/Marusyk/grok.net/blob/main/LICENSE)
- [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/Marusyk/grok.net/blob/main/CONTRIBUTING.md)
+[![Build](https://github.com/Marusyk/grok.net/actions/workflows/builds.yml/badge.svg?branch=main)](https://github.com/Marusyk/grok.net/actions/workflows/builds.yml)
+[![GitHub release](https://badge.fury.io/gh/Marusyk%2Fgrok.net.svg)](https://github.com/Marusyk/grok.net/releases/tag/v1.1.0)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/Marusyk/grok.net/blob/main/LICENSE)
+[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/Marusyk/grok.net/blob/main/CONTRIBUTING.md)
 
- [![NuGet version](https://badge.fury.io/nu/grok.net.svg)](https://badge.fury.io/nu/grok.net)
- [![Nuget](https://img.shields.io/nuget/dt/grok.net.svg)](https://www.nuget.org/packages/Grok.Net)
- [![PowerShell Gallery Version](https://img.shields.io/powershellgallery/v/Grok)](https://www.powershellgallery.com/packages/Grok)
- [![PowerShell Gallery](https://img.shields.io/powershellgallery/dt/Grok)](https://www.powershellgallery.com/packages/Grok)
+[![NuGet version](https://badge.fury.io/nu/grok.net.svg)](https://badge.fury.io/nu/grok.net)
+[![Nuget](https://img.shields.io/nuget/dt/grok.net.svg)](https://www.nuget.org/packages/Grok.Net)
+[![PowerShell Gallery Version](https://img.shields.io/powershellgallery/v/Grok)](https://www.powershellgallery.com/packages/Grok)
+[![PowerShell Gallery](https://img.shields.io/powershellgallery/dt/Grok)](https://www.powershellgallery.com/packages/Grok)
 
 # Code Coverage
 
@@ -36,13 +36,14 @@ Install-Module -Name Grok
 
 Grok is a great way to parse unstructured log data into something structured and queryable. It sits on top of Regular Expression (regex) and uses text patterns to match lines in log files.
 
-A great way to get started with building yours grok filters is this grok debug tool: https://grokdebug.herokuapp.com/
+A great way to get started with building yours grok filters is this grok debug tool: <https://grokdebug.herokuapp.com/>
 
 What can I use Grok for?
- - reporting errors and other patterns from logs and processes
- - parsing complex text output and converting it to json for external processing
- - apply 'write-once use-everywhere' to regular expressions
- - automatically providing patterns for unknown text inputs (logs you want patterns generated for future matching)
+
+- reporting errors and other patterns from logs and processes
+- parsing complex text output and converting it to json for external processing
+- apply 'write-once use-everywhere' to regular expressions
+- automatically providing patterns for unknown text inputs (logs you want patterns generated for future matching)
 
 The syntax for a grok pattern is `%{SYNTAX:SEMANTIC}`
 
@@ -51,17 +52,19 @@ The `SYNTAX` is the name of [the pattern](https://raw.githubusercontent.com/logs
 For example, `3.44` will be matched by the `NUMBER` pattern and `55.3.244.1` will be matched by the `IP` pattern. `3.44` could be the duration of an event, so you could call it simply `duration`. Further, a string `55.3.244.1` might identify the `client` making a request.
 For the above example, your grok filter would look something like this:
 
-```
+```text
 %{NUMBER:duration} %{IP:client}
 ```
+
 Examples: With that idea of a syntax and semantic, we can pull out useful fields from a sample log like this fictional http request log:
 
-```
+```text
 55.3.244.1 GET /index.html 15824 0.043
 ```
+
 The pattern for this could be:
 
-```
+```text
 %{IP:client} %{WORD:method} %{URIPATHPARAM:request} %{NUMBER:bytes} %{NUMBER:duration}
 ```
 
@@ -88,13 +91,13 @@ You are ready to parse and print result
 var grokResult = grok.Parse(logs);
 foreach (var item in grokResult)
 {
-  Console.WriteLine($"{item.Key} : {item.Value}");
+    Console.WriteLine($"{item.Key} : {item.Value}");
 }
 ```
 
 output:
 
-```csharp
+```text
 month : 06
 day : 21
 year : 19
@@ -123,7 +126,7 @@ Create a file and write the pattern you need as the pattern name, space, then th
 
 For example, Patterns\grok-custom-patterns:
 
-```
+```text
 ZIPCODE [1-9]{1}[0-9]{2}\s{0,1}[0-9]{3}
 ```
 
@@ -142,7 +145,7 @@ Define a collection of patterns
 ```csharp
 var custom = new Dictionary<string, string>
 {
-     {"BASE64", "(?=(.{4})*$)[A-Za-z0-9+/]*={0,2}$"}
+    {"BASE64", "(?=(.{4})*$)[A-Za-z0-9+/]*={0,2}$"}
 };
 ```
 
