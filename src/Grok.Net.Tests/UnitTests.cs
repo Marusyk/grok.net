@@ -207,7 +207,7 @@ namespace GrokNetTests
             // Arrange
             var customPatterns = new Dictionary<string, string>
             {
-                { "ZIPCODE", "[1-9]{1}[0-9]{2}\\s{0,1}[0-9]{3}" }, 
+                { "ZIPCODE", "[1-9]{1}[0-9]{2}\\s{0,1}[0-9]{3}" },
                 { "FLOAT", "[+-]?([0-9]*[.,]}?[0-9]+)" }
             };
             const string email = "Bob.Davis@microsoft.com";
@@ -277,11 +277,9 @@ namespace GrokNetTests
         {
             // Arrange
             const string grokPattern = null;
-            const string logs = "";
-            var sut = new Grok(grokPattern);
 
             // Act, Assert
-            Assert.Throws<ArgumentNullException>(() => sut.Parse(logs));
+            Assert.Throws<ArgumentNullException>(() => new Grok(grokPattern));
         }
     }
 }

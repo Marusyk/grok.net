@@ -22,6 +22,6 @@ jobs:
       run: dotnet tool restore
 
     - name: Cake Action
-      run: dotnet cake ./build.cake --Target UploadTestReport
       env:
         COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+      run: dotnet cake ./build.cake --Target UploadTestReport

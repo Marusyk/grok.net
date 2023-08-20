@@ -4,9 +4,9 @@ Cross platform .NET grok implementation as a NuGet package
 
  [![Build](https://github.com/Marusyk/grok.net/actions/workflows/builds.yml/badge.svg?branch=main)](https://github.com/Marusyk/grok.net/actions/workflows/builds.yml)
  [![GitHub release](https://badge.fury.io/gh/Marusyk%2Fgrok.net.svg)](https://github.com/Marusyk/grok.net/releases/tag/v1.1.0)
- [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/Marusyk/grok.net/blob/main/LICENSE) 
+ [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/Marusyk/grok.net/blob/main/LICENSE)
  [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/Marusyk/grok.net/blob/main/CONTRIBUTING.md)
- 
+
  [![NuGet version](https://badge.fury.io/nu/grok.net.svg)](https://badge.fury.io/nu/grok.net)
  [![Nuget](https://img.shields.io/nuget/dt/grok.net.svg)](https://www.nuget.org/packages/Grok.Net)
  [![PowerShell Gallery Version](https://img.shields.io/powershellgallery/v/Grok)](https://www.powershellgallery.com/packages/Grok)
@@ -23,7 +23,7 @@ Install as a library from [Nuget](http://nuget.org):
 **[Grok.Net](https://www.nuget.org/packages/Grok.Net)**
 
     PM> Install-Package Grok.Net
-    
+
 Install as a PowerShell module from [PowershellGallery](https://www.powershellgallery.com):
 
 **[Grok](https://www.powershellgallery.com/packages/Grok)**
@@ -46,7 +46,7 @@ What can I use Grok for?
 
 The syntax for a grok pattern is `%{SYNTAX:SEMANTIC}`
 
-The `SYNTAX` is the name of [the pattern](https://raw.githubusercontent.com/logstash-plugins/logstash-patterns-core/main/patterns/grok-patterns) that will match your text. `SEMANTIC` is the key. 
+The `SYNTAX` is the name of [the pattern](https://raw.githubusercontent.com/logstash-plugins/logstash-patterns-core/main/patterns/grok-patterns) that will match your text. `SEMANTIC` is the key.
 
 For example, `3.44` will be matched by the `NUMBER` pattern and `55.3.244.1` will be matched by the `IP` pattern. `3.44` could be the duration of an event, so you could call it simply `duration`. Further, a string `55.3.244.1` might identify the `client` making a request.
 For the above example, your grok filter would look something like this:
@@ -79,7 +79,7 @@ then prepare some logs to parse
 
 ```csharp
 string logs = @"06-21-19 21:00:13:589241;15;INFO;main;DECODED: 775233900043 DECODED BY: 18500738 DISTANCE: 1.5165
-                06-21-19 21:00:13:589265;156;WARN;main;DECODED: 775233900043 EMPTY DISTANCE: --------";
+                06-22-19 22:00:13:589265;156;WARN;main;DECODED: 775233900043 EMPTY DISTANCE: --------";
 ```
 
 You are ready to parse and print result
@@ -90,6 +90,27 @@ foreach (var item in grokResult)
 {
   Console.WriteLine($"{item.Key} : {item.Value}");
 }
+```
+
+output:
+
+```csharp
+month : 06
+day : 21
+year : 19
+timestamp : 21:00:13:589241
+id : 15
+loglevel : INFO
+func : main
+msg : DECODED: 775233900043 DECODED BY: 18500738 DISTANCE: 1.5165
+month : 06
+day : 22
+year : 19
+timestamp : 22:00:13:589265
+id : 156
+loglevel : WARN
+func : main
+msg : DECODED: 775233900043 EMPTY DISTANCE: --------
 ```
 
 # Custom grok patterns
@@ -143,7 +164,7 @@ To get help use `help grok` command
 
 ## Build
 
-On Windows: 
+On Windows:
 ```powershell
 build.ps1
 ```
@@ -163,4 +184,4 @@ Also. please read [CONTRIBUTING.md](https://github.com/Marusyk/grok.net/blob/mai
 
 This project is licensed under the MIT License - see the [LICENSE.md](https://github.com/Marusyk/grok.net/blob/main/LICENSE) file for details
 
-Thanks to [@martinjt](https://github.com/martinjt). The project is based on [martinjt/grokdotnet](https://github.com/martinjt/grokdotnet). 
+Thanks to [@martinjt](https://github.com/martinjt). The project is based on [martinjt/grokdotnet](https://github.com/martinjt/grokdotnet).
