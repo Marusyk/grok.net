@@ -291,10 +291,10 @@ namespace GrokNetTests
             // Arrange
             const string timeKeyword = "loggingTime";
             const string messageKeyword = "message";
-            const RegexOptions options = RegexOptions.Compiled | RegexOptions.ExplicitCapture | RegexOptions.Singleline;
+            const RegexOptions options = RegexOptions.Singleline;
 
             var defaultGrok = new Grok($"%{{TIMESTAMP_ISO8601:{timeKeyword}}} %{{GREEDYDATA:{messageKeyword}}}");
-            var multilineGrok = new Grok($"%{{TIMESTAMP_ISO8601:{timeKeyword}}} %{{GREEDYDATA:{messageKeyword}}}", options);
+            var multilineGrok = new Grok($"%{{TIMESTAMP_ISO8601:{timeKeyword}}} %{{GREEDYDATA:{messageKeyword}}}", null, options);
 
             const string logs = @"2023-02-21 04:15:26.349 Parsing output [221206045974]: [XXXX=9999]Got error: Dimension error at argument [0]
             Node: X
