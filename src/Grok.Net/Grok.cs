@@ -86,41 +86,6 @@ namespace GrokNet
             return new GrokResult(grokItems);
         }
 
-        public Dictionary<string, List<object>> AsDictionary(string text)
-        {
-            if (_compiledRegex == null)
-            {
-                ParsePattern();
-            }
-
-            var items = new Dictionary<string, List<object>>();
-
-            foreach (Match match in _compiledRegex.Matches(text))
-            {
-                foreach (string groupName in _patternGroupNames)
-                {
-                    if (groupName != "0")
-                    {
-                        string groupValue = match.Groups[groupName].Value;
-
-                        var value = _typeMaps.TryGetValue(groupName, out string mappedType)
-                            ? MapType(mappedType, groupValue)
-                            : groupValue;
-
-                        if (items.ContainsKey(groupName))
-                        {
-                            items[groupName].Add(value);
-                        }
-                        else
-                        {
-                            items.Add(groupName, new List<object>() { value });
-                        }
-                    }
-                }
-            }
-            return items;
-        }
-
         private void AddCustomPatterns(IDictionary<string, string> customPatterns)
         {
             foreach (var pattern in customPatterns)
