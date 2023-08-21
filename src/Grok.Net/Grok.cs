@@ -14,29 +14,42 @@ namespace GrokNet
         private readonly Dictionary<string, string> _patterns;
         private readonly Dictionary<string, string> _typeMaps;
         private Regex _compiledRegex;
-        private List<string> _groupNames;
+        private IReadOnlyList<string> _patternGroupNames;
         private readonly RegexOptions _regexOptions = RegexOptions.Compiled | RegexOptions.ExplicitCapture;
 
         private static readonly Regex _grokRegex = new Regex("%{(\\w+):(\\w+)(?::\\w+)?}", RegexOptions.Compiled);
         private static readonly Regex _grokRegexWithType = new Regex("%{(\\w+):(\\w+):(\\w+)?}", RegexOptions.Compiled);
         private static readonly Regex _grokWithoutName = new Regex("%{(\\w+)}", RegexOptions.Compiled);
-
+/// <summary>
+        ///     Initializes a new instance of the <see cref="Grok"/> class with the specified Grok pattern.
+        /// </summary>
+        /// <param name="grokPattern">The Grok pattern to use.</param>
         public Grok(string grokPattern)
         {
-            _grokPattern = grokPattern;
+            _grokPattern = grokPattern ?? throw new ArgumentNullException(nameof(grokPattern));
             _patterns = new Dictionary<string, string>();
             _typeMaps = new Dictionary<string, string>();
 
             LoadPatterns();
         }
 
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="Grok"/> class with the specified Grok pattern and custom patterns from a stream.
+        /// </summary>
+        /// <param name="grokPattern">The Grok pattern to use.</param>
+        /// <param name="customPatterns">A stream containing custom patterns.</param>
         public Grok(string grokPattern, Stream customPatterns) : this(grokPattern)
         {
             LoadCustomPatterns(customPatterns);
         }
-
+/// <summary>
+        ///     Initializes a new instance of the <see cref="Grok"/> class with the specified Grok pattern and custom patterns.
+        /// </summary>
+        /// <param name="grokPattern">The Grok pattern to use.</param>
+        /// <param name="customPatterns">Custom patterns to add.</param>
         public Grok(string grokPattern, IDictionary<string, string> customPatterns) : this(grokPattern)
         {
+            AddCustomPatterns(customPatterns);
             AddPatterns(customPatterns);
         }
 
@@ -67,24 +80,31 @@ namespace GrokNet
             }
         }
 
+        /// <summary>
+        ///     Parses the input text using the defined Grok pattern and returns the parsed result.
+        /// </summary>
+        /// <param name="text">The text to parse.</param>
+        /// <returns>A <see cref="GrokResult"/> containing the parsed items.</returns>
         public GrokResult Parse(string text)
         {
             if (_compiledRegex == null)
             {
-                ParseGrokString();
+                ParsePattern();
             }
 
             var grokItems = new List<GrokItem>();
 
             foreach (Match match in _compiledRegex.Matches(text))
             {
-                foreach (string groupName in _groupNames)
+                foreach (string groupName in _patternGroupNames)
                 {
                     if (groupName != "0")
                     {
-                        grokItems.Add(_typeMaps.ContainsKey(groupName)
-                            ? new GrokItem(groupName, MapType(_typeMaps[groupName], match.Groups[groupName].Value))
-                            : new GrokItem(groupName, match.Groups[groupName].Value));
+                        string groupValue = match.Groups[groupName].Value;
+
+                        grokItems.Add(_typeMaps.TryGetValue(groupName, out string mappedType)
+                            ? new GrokItem(groupName, MapType(mappedType, groupValue))
+                            : new GrokItem(groupName, groupValue));
                     }
                 }
             }
@@ -92,35 +112,56 @@ namespace GrokNet
             return new GrokResult(grokItems);
         }
 
-        private void ParseGrokString()
+        private void AddCustomPatterns(IDictionary<string, string> customPatterns)
+        {
+            foreach (var pattern in customPatterns)
+            {
+                AddPatternIfNotExists(pattern.Key, pattern.Value);
+            }
+        }
+
+        private void AddPatternIfNotExists(string key, string value)
+        {
+            if (!_patterns.ContainsKey(key))
+            {
+                EnsurePatternIsValid(value);
+                _patterns.Add(key, value);
+            }
+        }
+
+        private void ParsePattern()
         {
             string pattern = string.Empty;
-            bool flag;
+            bool done;
 
             do
             {
-                flag = false;
+                done = false;
 
-                MatchCollection matches =
-                    _grokRegexWithType.Matches(string.IsNullOrEmpty(pattern) ? _grokPattern : pattern);
-                foreach (Match match in matches)
+                ProcessTypeMappings(ref pattern);
+
+                string newPattern = _grokWithoutName.Replace(_grokRegex.Replace(string.IsNullOrEmpty(pattern) ? _grokPattern : pattern, ReplaceWithName), ReplaceWithoutName);
+
+                if (newPattern.Equals(pattern, StringComparison.CurrentCultureIgnoreCase))
                 {
-                    _typeMaps.Add(match.Groups[2].Value, match.Groups[3].Value);
+                    done = true;
                 }
 
-                string str = _grokWithoutName.Replace(
-                    _grokRegex.Replace(string.IsNullOrEmpty(pattern) ? _grokPattern : pattern, ReplaceWithName),
-                    ReplaceWithoutName);
-                if (str.Equals(pattern, StringComparison.CurrentCultureIgnoreCase))
-                {
-                    flag = true;
-                }
+                pattern = newPattern;
 
-                pattern = str;
-            } while (!flag);
+            } while (!done);
 
-            _compiledRegex = new Regex(pattern, _regexOptions);
-            _groupNames = _compiledRegex.GetGroupNames().ToList();
+            _compiledRegex = new Regex(pattern, RegexOptions.Compiled | RegexOptions.ExplicitCapture);
+            _patternGroupNames = _compiledRegex.GetGroupNames().ToList();
+        }
+
+        private void ProcessTypeMappings(ref string pattern)
+        {
+            MatchCollection matches = _grokRegexWithType.Matches(string.IsNullOrEmpty(pattern) ? _grokPattern : pattern);
+            foreach (Match match in matches)
+            {
+                _typeMaps.Add(match.Groups[2].Value, match.Groups[3].Value);
+            }
         }
 
         private static object MapType(string type, string data)
@@ -149,16 +190,18 @@ namespace GrokNet
         private void LoadPatterns()
         {
             Assembly assembly = typeof(Grok).GetTypeInfo().Assembly;
-            foreach (var manifestResourceName in assembly.GetManifestResourceNames())
+            foreach (var resourceName in assembly.GetManifestResourceNames())
             {
-                if (manifestResourceName.EndsWith("grok-patterns"))
+                if (resourceName.EndsWith("grok-patterns"))
                 {
-                    using (var sr = new StreamReader(assembly.GetManifestResourceStream(manifestResourceName),
-                               Encoding.UTF8))
+                    using (Stream resourceStream = assembly.GetManifestResourceStream(resourceName))
                     {
-                        while (!sr.EndOfStream)
+                        using (var sr = new StreamReader(resourceStream, Encoding.UTF8))
                         {
-                            ProcessPatternLine(sr.ReadLine());
+                            while (!sr.EndOfStream)
+                            {
+                                ProcessPatternLine(sr.ReadLine());
+                            }
                         }
                     }
                 }
@@ -197,7 +240,7 @@ namespace GrokNet
             AddPatternIfNotExists(strArray[0], strArray[1]);
         }
 
-        private void EnsurePatternIsValid(string pattern)
+        private static void EnsurePatternIsValid(string pattern)
         {
             try
             {
