@@ -115,6 +115,7 @@ loglevel : WARN
 func : main
 msg : DECODED: 775233900043 EMPTY DISTANCE: --------
 ```
+or use `ToDictionary()` on `grokResult` to get the result as `IReadOnlyDictionary<string, IEnumerable<object>>` 
 
 # Custom grok patterns
 
