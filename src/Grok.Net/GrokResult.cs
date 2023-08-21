@@ -11,7 +11,7 @@ namespace GrokNet
         {
         }
 
-        public Dictionary<string, IEnumerable<object>> ToDictionary() => Items
+        public IReadOnlyDictionary<string, IEnumerable<object>> ToDictionary() => Items
             .GroupBy(grokItem => grokItem.Key)
             .ToDictionary(groupName => groupName.Key, grokItems => grokItems.Select(grokItem => grokItem.Value));
     }
