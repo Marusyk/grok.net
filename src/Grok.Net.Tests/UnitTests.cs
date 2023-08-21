@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using GrokNet;
 using Xunit;
 
@@ -12,6 +13,7 @@ namespace GrokNetTests
             File.OpenRead($"Resources{Path.DirectorySeparatorChar}grok-custom-patterns");
         private static Stream ReadCustomFileWithInvalidPatterns() =>
             File.OpenRead($"Resources{Path.DirectorySeparatorChar}grok-custom-patterns-invalid");
+
         [Fact]
         public void Parse_Empty_Logs_Not_Throws()
         {
@@ -300,6 +302,27 @@ namespace GrokNetTests
             Assert.IsType<string>(grokResult[0].Value);
             Assert.Equal(base64String, grokResult[0].Value);
             Assert.Single(grokResult);
+        }
+
+        [Fact]
+        public void GrokResult_To_Dictionary()
+        {
+            // Arrange
+            const string logs = @"Bob.Davis@microsoft.com:Free as in Free Beer
+            Davis.Bob@microsoft.com:EMPTY
+            DavisBob@microsoft.com:True Man";
+            var sut = new Grok(@"%{EMAILADDRESS:email}:%{GREEDYDATA:comment}");
+
+            // Act
+            IReadOnlyDictionary<string, IEnumerable<object>> grokResult = sut.Parse(logs).ToDictionary();
+
+            // Assert
+            Assert.NotNull(grokResult);
+            Assert.Equal(2, grokResult.Count);
+            Assert.Equal(3, grokResult["email"].Count());
+            Assert.Equal(3, grokResult["comment"].Count());
+            Assert.True(grokResult.ContainsKey("email"));
+            Assert.True(grokResult.ContainsKey("comment"));
         }
     }
 }
