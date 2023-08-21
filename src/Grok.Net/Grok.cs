@@ -20,7 +20,8 @@ namespace GrokNet
         private static readonly Regex _grokRegex = new Regex("%{(\\w+):(\\w+)(?::\\w+)?}", RegexOptions.Compiled);
         private static readonly Regex _grokRegexWithType = new Regex("%{(\\w+):(\\w+):(\\w+)?}", RegexOptions.Compiled);
         private static readonly Regex _grokWithoutName = new Regex("%{(\\w+)}", RegexOptions.Compiled);
-/// <summary>
+
+        /// <summary>
         ///     Initializes a new instance of the <see cref="Grok"/> class with the specified Grok pattern.
         /// </summary>
         /// <param name="grokPattern">The Grok pattern to use.</param>
@@ -40,44 +41,32 @@ namespace GrokNet
         /// <param name="customPatterns">A stream containing custom patterns.</param>
         public Grok(string grokPattern, Stream customPatterns) : this(grokPattern)
         {
-            LoadCustomPatterns(customPatterns);
+            LoadCustomPatternsFromStream(customPatterns);
         }
-/// <summary>
+
+        /// <summary>
         ///     Initializes a new instance of the <see cref="Grok"/> class with the specified Grok pattern and custom patterns.
         /// </summary>
         /// <param name="grokPattern">The Grok pattern to use.</param>
         /// <param name="customPatterns">Custom patterns to add.</param>
         public Grok(string grokPattern, IDictionary<string, string> customPatterns) : this(grokPattern)
         {
-            AddCustomPatterns(customPatterns);
-            AddPatterns(customPatterns);
+            LoadCustomPatternsFromDictionary(customPatterns);
         }
 
-        public Grok(string grokPattern, IDictionary<string, string> customPatterns, RegexOptions regexOptions): this(grokPattern, customPatterns)
+        /// <summary>
+        /// Initialized a new instance of the <see cref="Grok"/> class with specified Grok pattern,
+        /// custom patterns if necessary, and custom <see cref="RegexOptions"/> .
+        /// </summary>
+        /// <param name="grokPattern">The Grok pattern to use.</param>
+        /// <param name="customPatterns">Custom patterns to add (null if none are required).</param>
+        /// <param name="regexOptions">Custom regex options.
+        /// Note: will be combined with <see cref="RegexOptions.Compiled"/> and <see cref="RegexOptions.ExplicitCapture"/> options.
+        /// </param>
+        public Grok(string grokPattern, IDictionary<string, string> customPatterns, RegexOptions regexOptions) : this(
+            grokPattern, customPatterns)
         {
             _regexOptions |= regexOptions;
-        }
-
-        private void AddPatterns(IDictionary<string, string> customPatterns)
-        {
-            if (customPatterns == null)
-            {
-                return;
-            }
-
-            foreach (var pattern in customPatterns)
-            {
-                AddPatternIfNotExists(pattern.Key, pattern.Value);
-            }
-        }
-
-        private void AddPatternIfNotExists(string key, string value)
-        {
-            if (!_patterns.ContainsKey(key))
-            {
-                EnsurePatternIsValid(value);
-                _patterns.Add(key, value);
-            }
         }
 
         /// <summary>
@@ -112,8 +101,13 @@ namespace GrokNet
             return new GrokResult(grokItems);
         }
 
-        private void AddCustomPatterns(IDictionary<string, string> customPatterns)
+        private void LoadCustomPatternsFromDictionary(IDictionary<string, string> customPatterns)
         {
+            if (customPatterns == null)
+            {
+                return;
+            }
+
             foreach (var pattern in customPatterns)
             {
                 AddPatternIfNotExists(pattern.Key, pattern.Value);
@@ -148,10 +142,9 @@ namespace GrokNet
                 }
 
                 pattern = newPattern;
-
             } while (!done);
 
-            _compiledRegex = new Regex(pattern, RegexOptions.Compiled | RegexOptions.ExplicitCapture);
+            _compiledRegex = new Regex(pattern, _regexOptions);
             _patternGroupNames = _compiledRegex.GetGroupNames().ToList();
         }
 
@@ -208,7 +201,7 @@ namespace GrokNet
             }
         }
 
-        private void LoadCustomPatterns(Stream customPatterns)
+        private void LoadCustomPatternsFromStream(Stream customPatterns)
         {
             using (var sr = new StreamReader(customPatterns, Encoding.UTF8, true))
             {
