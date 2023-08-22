@@ -129,11 +129,6 @@ namespace GrokNet
 
         private void LoadCustomPatternsFromDictionary(IDictionary<string, string> customPatterns)
         {
-            if (customPatterns == null)
-            {
-                return;
-            }
-
             foreach (var pattern in customPatterns)
             {
                 AddPatternIfNotExists(pattern.Key, pattern.Value);
