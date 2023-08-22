@@ -35,11 +35,36 @@ namespace GrokNet
         }
 
         /// <summary>
+        ///     Initializes a new instance of the <see cref="Grok"/> class with the specified Grok pattern and regex options.
+        /// </summary>
+        /// <param name="grokPattern">The Grok pattern to use.</param>
+        /// <param name="regexOptions">Additional regex options.</param>
+        public Grok(string grokPattern, RegexOptions regexOptions)
+            : this(grokPattern)
+        {
+            _regexOptions |= regexOptions;
+        }
+
+        /// <summary>
         ///     Initializes a new instance of the <see cref="Grok"/> class with the specified Grok pattern and custom patterns from a stream.
         /// </summary>
         /// <param name="grokPattern">The Grok pattern to use.</param>
         /// <param name="customPatterns">A stream containing custom patterns.</param>
-        public Grok(string grokPattern, Stream customPatterns) : this(grokPattern)
+        public Grok(string grokPattern, Stream customPatterns)
+            : this(grokPattern)
+        {
+            LoadCustomPatternsFromStream(customPatterns);
+        }
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="Grok"/> class with the specified Grok pattern and custom patterns from a stream,
+        ///     as well as additional regex options.
+        /// </summary>
+        /// <param name="grokPattern">The Grok pattern to use.</param>
+        /// <param name="customPatterns">A stream containing custom patterns.</param>
+        /// <param name="regexOptions">Additional regex options.</param>
+        public Grok(string grokPattern, Stream customPatterns, RegexOptions regexOptions)
+            : this(grokPattern, regexOptions)
         {
             LoadCustomPatternsFromStream(customPatterns);
         }
@@ -49,24 +74,23 @@ namespace GrokNet
         /// </summary>
         /// <param name="grokPattern">The Grok pattern to use.</param>
         /// <param name="customPatterns">Custom patterns to add.</param>
-        public Grok(string grokPattern, IDictionary<string, string> customPatterns) : this(grokPattern)
+        public Grok(string grokPattern, IDictionary<string, string> customPatterns)
+            : this(grokPattern)
         {
             LoadCustomPatternsFromDictionary(customPatterns);
         }
 
         /// <summary>
-        /// Initialized a new instance of the <see cref="Grok"/> class with specified Grok pattern,
-        /// custom patterns if necessary, and custom <see cref="RegexOptions"/> .
+        ///     Initialized a new instance of the <see cref="Grok"/> class with specified Grok pattern,
+        ///     custom patterns if necessary, and custom <see cref="RegexOptions"/> .
         /// </summary>
         /// <param name="grokPattern">The Grok pattern to use.</param>
-        /// <param name="customPatterns">Custom patterns to add (null if none are required).</param>
-        /// <param name="regexOptions">Custom regex options.
-        /// Note: will be combined with <see cref="RegexOptions.Compiled"/> and <see cref="RegexOptions.ExplicitCapture"/> options.
-        /// </param>
-        public Grok(string grokPattern, IDictionary<string, string> customPatterns, RegexOptions regexOptions) : this(
-            grokPattern, customPatterns)
+        /// <param name="customPatterns">Custom patterns to add.</param>
+        /// <param name="regexOptions">Additional regex options.</param>
+        public Grok(string grokPattern, IDictionary<string, string> customPatterns, RegexOptions regexOptions) 
+            : this(grokPattern, regexOptions)
         {
-            _regexOptions |= regexOptions;
+            LoadCustomPatternsFromDictionary(customPatterns);
         }
 
         /// <summary>

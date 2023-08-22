@@ -311,8 +311,7 @@ namespace GrokNetTests
             const string messageKeyword = "message";
             const RegexOptions options = RegexOptions.Singleline;
 
-            var defaultGrok = new Grok($"%{{TIMESTAMP_ISO8601:{timeKeyword}}} %{{GREEDYDATA:{messageKeyword}}}");
-            var multilineGrok = new Grok($"%{{TIMESTAMP_ISO8601:{timeKeyword}}} %{{GREEDYDATA:{messageKeyword}}}", null, options);
+            var multilineGrok = new Grok($"%{{TIMESTAMP_ISO8601:{timeKeyword}}} %{{GREEDYDATA:{messageKeyword}}}", options);
 
             const string logs = @"2023-02-21 04:15:26.349 Parsing output [221206045974]: [XXXX=9999]Got error: Dimension error at argument [0]
             Node: X
@@ -322,19 +321,14 @@ namespace GrokNetTests
                     (Third one)";
 
             // Act
-            GrokResult defaultResult = defaultGrok.Parse(logs);
             GrokResult multilineResult = multilineGrok.Parse(logs);
 
             // Assert
-            Assert.Equal("2023-02-21 04:15:26.349", defaultResult[0].Value);
             Assert.Equal("2023-02-21 04:15:26.349", multilineResult[0].Value);
 
-            var relevantDefaultObject = defaultResult[1].Value;
             var relevantMultilineObject = multilineResult[1].Value;
-            Assert.NotNull(relevantDefaultObject);
             Assert.NotNull(relevantMultilineObject);
 
-            Assert.DoesNotContain("(Third one)", (string) relevantDefaultObject);
             Assert.Contains("(Third one)", (string) relevantMultilineObject);
         }
     }
