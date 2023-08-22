@@ -15,7 +15,8 @@ namespace GrokNet
         private readonly Dictionary<string, string> _typeMaps;
         private Regex _compiledRegex;
         private IReadOnlyList<string> _patternGroupNames;
-        private readonly RegexOptions _regexOptions = RegexOptions.Compiled | RegexOptions.ExplicitCapture;
+        private const RegexOptions _defaultRegexOptions = RegexOptions.Compiled | RegexOptions.ExplicitCapture;
+        private readonly RegexOptions _regexOptions;
 
         private static readonly Regex _grokRegex = new Regex("%{(\\w+):(\\w+)(?::\\w+)?}", RegexOptions.Compiled);
         private static readonly Regex _grokRegexWithType = new Regex("%{(\\w+):(\\w+):(\\w+)?}", RegexOptions.Compiled);
@@ -30,6 +31,7 @@ namespace GrokNet
             _grokPattern = grokPattern ?? throw new ArgumentNullException(nameof(grokPattern));
             _patterns = new Dictionary<string, string>();
             _typeMaps = new Dictionary<string, string>();
+            _regexOptions = _defaultRegexOptions;
 
             LoadPatterns();
         }
@@ -42,7 +44,7 @@ namespace GrokNet
         public Grok(string grokPattern, RegexOptions regexOptions)
             : this(grokPattern)
         {
-            _regexOptions |= regexOptions;
+            _regexOptions = _defaultRegexOptions | regexOptions;
         }
 
         /// <summary>
