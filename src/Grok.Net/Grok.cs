@@ -55,7 +55,7 @@ namespace GrokNet
         public Grok(string grokPattern, Stream customPatterns)
             : this(grokPattern)
         {
-            LoadCustomPatternsFromStream(customPatterns);
+            LoadCustomPatterns(customPatterns);
         }
 
         /// <summary>
@@ -68,7 +68,7 @@ namespace GrokNet
         public Grok(string grokPattern, Stream customPatterns, RegexOptions regexOptions)
             : this(grokPattern, regexOptions)
         {
-            LoadCustomPatternsFromStream(customPatterns);
+            LoadCustomPatterns(customPatterns);
         }
 
         /// <summary>
@@ -79,7 +79,7 @@ namespace GrokNet
         public Grok(string grokPattern, IDictionary<string, string> customPatterns)
             : this(grokPattern)
         {
-            LoadCustomPatternsFromDictionary(customPatterns);
+            LoadCustomPatterns(customPatterns);
         }
 
         /// <summary>
@@ -92,7 +92,7 @@ namespace GrokNet
         public Grok(string grokPattern, IDictionary<string, string> customPatterns, RegexOptions regexOptions) 
             : this(grokPattern, regexOptions)
         {
-            LoadCustomPatternsFromDictionary(customPatterns);
+            LoadCustomPatterns(customPatterns);
         }
 
         /// <summary>
@@ -125,14 +125,6 @@ namespace GrokNet
             }
 
             return new GrokResult(grokItems);
-        }
-
-        private void LoadCustomPatternsFromDictionary(IDictionary<string, string> customPatterns)
-        {
-            foreach (var pattern in customPatterns)
-            {
-                AddPatternIfNotExists(pattern.Key, pattern.Value);
-            }
         }
 
         private void AddPatternIfNotExists(string key, string value)
@@ -222,7 +214,7 @@ namespace GrokNet
             }
         }
 
-        private void LoadCustomPatternsFromStream(Stream customPatterns)
+        private void LoadCustomPatterns(Stream customPatterns)
         {
             using (var sr = new StreamReader(customPatterns, Encoding.UTF8, true))
             {
@@ -230,6 +222,14 @@ namespace GrokNet
                 {
                     ProcessPatternLine(sr.ReadLine());
                 }
+            }
+        }
+
+        private void LoadCustomPatterns(IDictionary<string, string> customPatterns)
+        {
+            foreach (var pattern in customPatterns)
+            {
+                AddPatternIfNotExists(pattern.Key, pattern.Value);
             }
         }
 
