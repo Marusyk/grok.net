@@ -306,7 +306,7 @@ namespace GrokNetTests
         }
 
         [Fact]
-        public void Parse_Multiline()
+        public void Parse_Multiline_String_As_A_Single_Line_With_Regex_Options_Specified()
         {
             // Arrange
             const string timeKeyword = "loggingTime";
