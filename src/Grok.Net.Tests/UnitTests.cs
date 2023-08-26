@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using GrokNet;
 using Xunit;
 
@@ -302,6 +303,35 @@ namespace GrokNetTests
             Assert.IsType<string>(grokResult[0].Value);
             Assert.Equal(base64String, grokResult[0].Value);
             Assert.Single(grokResult);
+        }
+
+        [Fact]
+        public void Parse_Multiline_String_As_A_Single_Line_With_Regex_Options_Specified()
+        {
+            // Arrange
+            const string timeKeyword = "loggingTime";
+            const string messageKeyword = "message";
+            const RegexOptions options = RegexOptions.Singleline;
+
+            var multilineGrok = new Grok($"%{{TIMESTAMP_ISO8601:{timeKeyword}}} %{{GREEDYDATA:{messageKeyword}}}", options);
+
+            const string logs = @"2023-02-21 04:15:26.349 Parsing output [221206045974]: [XXXX=9999]Got error: Dimension error at argument [0]
+            Node: X
+            Token: Y
+            Context: Sample text 
+                Second line
+                    (Third one)";
+
+            // Act
+            GrokResult multilineResult = multilineGrok.Parse(logs);
+
+            // Assert
+            Assert.Equal("2023-02-21 04:15:26.349", multilineResult[0].Value);
+
+            var relevantMultilineObject = multilineResult[1].Value;
+            Assert.NotNull(relevantMultilineObject);
+
+            Assert.Contains("(Third one)", (string) relevantMultilineObject);
         }
 
         [Fact]

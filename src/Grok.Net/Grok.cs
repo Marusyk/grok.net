@@ -15,6 +15,8 @@ namespace GrokNet
         private readonly Dictionary<string, string> _typeMaps;
         private Regex _compiledRegex;
         private IReadOnlyList<string> _patternGroupNames;
+        private const RegexOptions _defaultRegexOptions = RegexOptions.Compiled | RegexOptions.ExplicitCapture;
+        private readonly RegexOptions _regexOptions;
 
         private static readonly Regex _grokRegex = new Regex("%{(\\w+):(\\w+)(?::\\w+)?}", RegexOptions.Compiled);
         private static readonly Regex _grokRegexWithType = new Regex("%{(\\w+):(\\w+):(\\w+)?}", RegexOptions.Compiled);
@@ -29,8 +31,20 @@ namespace GrokNet
             _grokPattern = grokPattern ?? throw new ArgumentNullException(nameof(grokPattern));
             _patterns = new Dictionary<string, string>();
             _typeMaps = new Dictionary<string, string>();
+            _regexOptions = _defaultRegexOptions;
 
             LoadPatterns();
+        }
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="Grok"/> class with the specified Grok pattern and regex options.
+        /// </summary>
+        /// <param name="grokPattern">The Grok pattern to use.</param>
+        /// <param name="regexOptions">Additional regex options.</param>
+        public Grok(string grokPattern, RegexOptions regexOptions)
+            : this(grokPattern)
+        {
+            _regexOptions = _defaultRegexOptions | regexOptions;
         }
 
         /// <summary>
@@ -45,6 +59,19 @@ namespace GrokNet
         }
 
         /// <summary>
+        ///     Initializes a new instance of the <see cref="Grok"/> class with the specified Grok pattern and custom patterns from a stream,
+        ///     as well as additional regex options.
+        /// </summary>
+        /// <param name="grokPattern">The Grok pattern to use.</param>
+        /// <param name="customPatterns">A stream containing custom patterns.</param>
+        /// <param name="regexOptions">Additional regex options.</param>
+        public Grok(string grokPattern, Stream customPatterns, RegexOptions regexOptions)
+            : this(grokPattern, regexOptions)
+        {
+            LoadCustomPatterns(customPatterns);
+        }
+
+        /// <summary>
         ///     Initializes a new instance of the <see cref="Grok"/> class with the specified Grok pattern and custom patterns.
         /// </summary>
         /// <param name="grokPattern">The Grok pattern to use.</param>
@@ -52,7 +79,20 @@ namespace GrokNet
         public Grok(string grokPattern, IDictionary<string, string> customPatterns)
             : this(grokPattern)
         {
-            AddCustomPatterns(customPatterns);
+            LoadCustomPatterns(customPatterns);
+        }
+
+        /// <summary>
+        ///     Initialized a new instance of the <see cref="Grok"/> class with specified Grok pattern,
+        ///     custom patterns if necessary, and custom <see cref="RegexOptions"/> .
+        /// </summary>
+        /// <param name="grokPattern">The Grok pattern to use.</param>
+        /// <param name="customPatterns">Custom patterns to add.</param>
+        /// <param name="regexOptions">Additional regex options.</param>
+        public Grok(string grokPattern, IDictionary<string, string> customPatterns, RegexOptions regexOptions) 
+            : this(grokPattern, regexOptions)
+        {
+            LoadCustomPatterns(customPatterns);
         }
 
         /// <summary>
@@ -83,15 +123,8 @@ namespace GrokNet
                     }
                 }
             }
-            return new GrokResult(grokItems);
-        }
 
-        private void AddCustomPatterns(IDictionary<string, string> customPatterns)
-        {
-            foreach (var pattern in customPatterns)
-            {
-                AddPatternIfNotExists(pattern.Key, pattern.Value);
-            }
+            return new GrokResult(grokItems);
         }
 
         private void AddPatternIfNotExists(string key, string value)
@@ -122,10 +155,9 @@ namespace GrokNet
                 }
 
                 pattern = newPattern;
-
             } while (!done);
 
-            _compiledRegex = new Regex(pattern, RegexOptions.Compiled | RegexOptions.ExplicitCapture);
+            _compiledRegex = new Regex(pattern, _regexOptions);
             _patternGroupNames = _compiledRegex.GetGroupNames().ToList();
         }
 
@@ -193,6 +225,14 @@ namespace GrokNet
             }
         }
 
+        private void LoadCustomPatterns(IDictionary<string, string> customPatterns)
+        {
+            foreach (var pattern in customPatterns)
+            {
+                AddPatternIfNotExists(pattern.Key, pattern.Value);
+            }
+        }
+
         private void ProcessPatternLine(string line)
         {
             if (string.IsNullOrEmpty(line))
@@ -210,6 +250,7 @@ namespace GrokNet
             {
                 return;
             }
+
             AddPatternIfNotExists(strArray[0], strArray[1]);
         }
 
