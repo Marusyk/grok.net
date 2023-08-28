@@ -14,7 +14,7 @@ Cross platform .NET grok implementation as a NuGet package
 
 # Code Coverage
 
-[![Coverage Status](https://coveralls.io/repos/github/Marusyk/grok.net/badge.svg)](https://coveralls.io/github/Marusyk/grok.net)
+[![Coverage Status](https://coveralls.io/repos/github/Marusyk/grok.net/badge.svg?branch=main)](https://coveralls.io/github/Marusyk/grok.net?branch=main)
 
 # How to Install
 
@@ -115,7 +115,7 @@ loglevel : WARN
 func : main
 msg : DECODED: 775233900043 EMPTY DISTANCE: --------
 ```
-or use `ToDictionary()` on `grokResult` to get the result as `IReadOnlyDictionary<string, IEnumerable<object>>` 
+or use `ToDictionary()` on `grokResult` to get the result as `IReadOnlyDictionary<string, IEnumerable<object>>`
 
 # Custom grok patterns
 
