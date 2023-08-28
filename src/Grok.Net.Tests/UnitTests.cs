@@ -318,7 +318,7 @@ namespace GrokNetTests
             const string logs = @"2023-02-21 04:15:26.349 Parsing output [221206045974]: [XXXX=9999]Got error: Dimension error at argument [0]
             Node: X
             Token: Y
-            Context: Sample text 
+            Context: Sample text
                 Second line
                     (Third one)";
 
@@ -331,7 +331,48 @@ namespace GrokNetTests
             var relevantMultilineObject = multilineResult[1].Value;
             Assert.NotNull(relevantMultilineObject);
 
-            Assert.Contains("(Third one)", (string) relevantMultilineObject);
+            Assert.Contains("(Third one)", (string)relevantMultilineObject);
+        }
+
+        [Fact]
+        public void Load_Custom_Patterns_From_Stream_And_Parse_With_Regex_Options_Specified()
+        {
+            // Arrange
+            const RegexOptions options = RegexOptions.Singleline;
+            const string zipcode = "122001";
+            const string email = "Bob.Davis@microsoft.com";
+
+            var sut = new Grok("%{ZIPCODE:zipcode}:%{EMAILADDRESS:email}", ReadCustomFile(), options);
+
+            // Act
+            GrokResult grokResult = sut.Parse($"{zipcode}:{email}");
+
+            // Assert
+            Assert.Equal(zipcode, grokResult[0].Value);
+            Assert.Equal(email, grokResult[1].Value);
+        }
+
+        [Fact]
+        public void Load_Custom_Patterns_And_Parse_With_Regex_Options_Specified()
+        {
+            // Arrange
+            const RegexOptions options = RegexOptions.Singleline;
+            const string zipcode = "122001";
+            var customPatterns = new Dictionary<string, string>
+            {
+                { "ZIPCODE", "[1-9]{1}[0-9]{2}\\s{0,1}[0-9]{3}" },
+                { "FLOAT", "[+-]?([0-9]*[.,]}?[0-9]+)" }
+            };
+            const string email = "Bob.Davis@microsoft.com";
+
+            var sut = new Grok("%{ZIPCODE:zipcode}:%{EMAILADDRESS:email}", customPatterns, options);
+
+            // Act
+            GrokResult grokResult = sut.Parse($"{zipcode}:{email}");
+
+            // Assert
+            Assert.Equal(zipcode, grokResult[0].Value);
+            Assert.Equal(email, grokResult[1].Value);
         }
 
         [Fact]
