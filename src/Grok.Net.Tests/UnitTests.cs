@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using GrokNet;
+using PCRE;
 using Xunit;
 
 namespace GrokNetTests
@@ -311,7 +311,7 @@ namespace GrokNetTests
             // Arrange
             const string timeKeyword = "loggingTime";
             const string messageKeyword = "message";
-            const RegexOptions options = RegexOptions.Singleline;
+            const PcreOptions options = PcreOptions.Singleline;
 
             var multilineGrok = new Grok($"%{{TIMESTAMP_ISO8601:{timeKeyword}}} %{{GREEDYDATA:{messageKeyword}}}", options);
 
@@ -338,7 +338,7 @@ namespace GrokNetTests
         public void Load_Custom_Patterns_From_Stream_And_Parse_With_Regex_Options_Specified()
         {
             // Arrange
-            const RegexOptions options = RegexOptions.Singleline;
+            const PcreOptions options = PcreOptions.Singleline;
             const string zipcode = "122001";
             const string email = "Bob.Davis@microsoft.com";
 
@@ -356,7 +356,7 @@ namespace GrokNetTests
         public void Load_Custom_Patterns_And_Parse_With_Regex_Options_Specified()
         {
             // Arrange
-            const RegexOptions options = RegexOptions.Singleline;
+            const PcreOptions options = PcreOptions.Singleline;
             const string zipcode = "122001";
             var customPatterns = new Dictionary<string, string>
             {

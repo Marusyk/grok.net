@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Text.RegularExpressions;
+using PCRE;
 
 namespace GrokNet
 {
@@ -13,14 +13,14 @@ namespace GrokNet
         private readonly string _grokPattern;
         private readonly Dictionary<string, string> _patterns;
         private readonly Dictionary<string, string> _typeMaps;
-        private Regex _compiledRegex;
+        private PcreRegex _compiledRegex;
         private IReadOnlyList<string> _patternGroupNames;
-        private const RegexOptions _defaultRegexOptions = RegexOptions.Compiled | RegexOptions.ExplicitCapture;
-        private readonly RegexOptions _regexOptions;
+        private const PcreOptions _defaultRegexOptions = PcreOptions.Compiled | PcreOptions.ExplicitCapture;
+        private readonly PcreOptions _regexOptions;
 
-        private static readonly Regex _grokRegex = new Regex("%{(\\w+):(\\w+)(?::\\w+)?}", RegexOptions.Compiled);
-        private static readonly Regex _grokRegexWithType = new Regex("%{(\\w+):(\\w+):(\\w+)?}", RegexOptions.Compiled);
-        private static readonly Regex _grokWithoutName = new Regex("%{(\\w+)}", RegexOptions.Compiled);
+        private static readonly PcreRegex _grokRegex = new PcreRegex("%{(\\w+):(\\w+)(?::\\w+)?}", PcreOptions.Compiled);
+        private static readonly PcreRegex _grokRegexWithType = new PcreRegex("%{(\\w+):(\\w+):(\\w+)?}", PcreOptions.Compiled);
+        private static readonly PcreRegex _grokWithoutName = new PcreRegex("%{(\\w+)}", PcreOptions.Compiled);
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="Grok"/> class with the specified Grok pattern.
@@ -41,7 +41,7 @@ namespace GrokNet
         /// </summary>
         /// <param name="grokPattern">The Grok pattern to use.</param>
         /// <param name="regexOptions">Additional regex options.</param>
-        public Grok(string grokPattern, RegexOptions regexOptions)
+        public Grok(string grokPattern, PcreOptions regexOptions)
             : this(grokPattern)
         {
             _regexOptions = _defaultRegexOptions | regexOptions;
@@ -65,7 +65,7 @@ namespace GrokNet
         /// <param name="grokPattern">The Grok pattern to use.</param>
         /// <param name="customPatterns">A stream containing custom patterns.</param>
         /// <param name="regexOptions">Additional regex options.</param>
-        public Grok(string grokPattern, Stream customPatterns, RegexOptions regexOptions)
+        public Grok(string grokPattern, Stream customPatterns, PcreOptions regexOptions)
             : this(grokPattern, regexOptions)
         {
             LoadCustomPatterns(customPatterns);
@@ -84,12 +84,12 @@ namespace GrokNet
 
         /// <summary>
         ///     Initialized a new instance of the <see cref="Grok"/> class with specified Grok pattern,
-        ///     custom patterns if necessary, and custom <see cref="RegexOptions"/> .
+        ///     custom patterns if necessary, and custom <see cref="PcreOptions"/> .
         /// </summary>
         /// <param name="grokPattern">The Grok pattern to use.</param>
         /// <param name="customPatterns">Custom patterns to add.</param>
         /// <param name="regexOptions">Additional regex options.</param>
-        public Grok(string grokPattern, IDictionary<string, string> customPatterns, RegexOptions regexOptions) 
+        public Grok(string grokPattern, IDictionary<string, string> customPatterns, PcreOptions regexOptions)
             : this(grokPattern, regexOptions)
         {
             LoadCustomPatterns(customPatterns);
@@ -109,7 +109,7 @@ namespace GrokNet
 
             var grokItems = new List<GrokItem>();
 
-            foreach (Match match in _compiledRegex.Matches(text))
+            foreach (PcreMatch match in _compiledRegex.Matches(text))
             {
                 foreach (string groupName in _patternGroupNames)
                 {
@@ -157,14 +157,14 @@ namespace GrokNet
                 pattern = newPattern;
             } while (!done);
 
-            _compiledRegex = new Regex(pattern, _regexOptions);
-            _patternGroupNames = _compiledRegex.GetGroupNames().ToList();
+            _compiledRegex = new PcreRegex(pattern, _regexOptions);
+            _patternGroupNames = _compiledRegex.PatternInfo.GroupNames.ToList();
         }
 
         private void ProcessTypeMappings(ref string pattern)
         {
-            MatchCollection matches = _grokRegexWithType.Matches(string.IsNullOrEmpty(pattern) ? _grokPattern : pattern);
-            foreach (Match match in matches)
+            IEnumerable<PcreMatch> matches = _grokRegexWithType.Matches(string.IsNullOrEmpty(pattern) ? _grokPattern : pattern);
+            foreach (PcreMatch match in matches)
             {
                 _typeMaps.Add(match.Groups[2].Value, match.Groups[3].Value);
             }
@@ -258,7 +258,7 @@ namespace GrokNet
         {
             try
             {
-                _ = Regex.Match("", pattern);
+                _ = PcreRegex.Match("", pattern);
             }
             catch (Exception e)
             {
@@ -266,17 +266,17 @@ namespace GrokNet
             }
         }
 
-        private string ReplaceWithName(Match match)
+        private string ReplaceWithName(PcreMatch match)
         {
-            Group group1 = match.Groups[2];
-            Group group2 = match.Groups[1];
+            PcreGroup group1 = match.Groups[2];
+            PcreGroup group2 = match.Groups[1];
 
             return _patterns.TryGetValue(group2.Value, out var str) ? $"(?<{group1}>{str})" : $"(?<{group1}>)";
         }
 
-        private string ReplaceWithoutName(Match match)
+        private string ReplaceWithoutName(PcreMatch match)
         {
-            Group group = match.Groups[1];
+            PcreGroup group = match.Groups[1];
 
             if (_patterns.TryGetValue(group.Value, out _))
             {
