@@ -3,18 +3,18 @@
 Cross platform .NET grok implementation as a NuGet package
 
 [![Build](https://github.com/Marusyk/grok.net/actions/workflows/builds.yml/badge.svg?branch=main)](https://github.com/Marusyk/grok.net/actions/workflows/builds.yml)
-[![GitHub release](https://badge.fury.io/gh/Marusyk%2Fgrok.net.svg)](https://github.com/Marusyk/grok.net/releases/tag/v1.1.0)
+[![GitHub release)](https://img.shields.io/github/v/release/Marusyk/grok.net?logo=github)](https://github.com/Marusyk/grok.net/releases)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/Marusyk/grok.net/blob/main/LICENSE)
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/Marusyk/grok.net/blob/main/CONTRIBUTING.md)
 
-[![NuGet version](https://badge.fury.io/nu/grok.net.svg)](https://badge.fury.io/nu/grok.net)
+[![NuGet version](https://img.shields.io/nuget/v/grok.net.svg?logo=NuGet)](https://www.nuget.org/packages/grok.net)
 [![Nuget](https://img.shields.io/nuget/dt/grok.net.svg)](https://www.nuget.org/packages/Grok.Net)
 [![PowerShell Gallery Version](https://img.shields.io/powershellgallery/v/Grok)](https://www.powershellgallery.com/packages/Grok)
 [![PowerShell Gallery](https://img.shields.io/powershellgallery/dt/Grok)](https://www.powershellgallery.com/packages/Grok)
 
 # Code Coverage
 
-[![Coverage Status](https://coveralls.io/repos/github/Marusyk/grok.net/badge.svg)](https://coveralls.io/github/Marusyk/grok.net)
+[![Coverage Status](https://coveralls.io/repos/github/Marusyk/grok.net/badge.svg?branch=main)](https://coveralls.io/github/Marusyk/grok.net?branch=main)
 
 # How to Install
 
@@ -115,7 +115,7 @@ loglevel : WARN
 func : main
 msg : DECODED: 775233900043 EMPTY DISTANCE: --------
 ```
-or use `ToDictionary()` on `grokResult` to get the result as `IReadOnlyDictionary<string, IEnumerable<object>>` 
+or use `ToDictionary()` on `grokResult` to get the result as `IReadOnlyDictionary<string, IEnumerable<object>>`
 
 # Custom grok patterns
 
