@@ -7,7 +7,7 @@ Cross platform .NET grok implementation as a NuGet package
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/Marusyk/grok.net/blob/main/LICENSE)
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/Marusyk/grok.net/blob/main/CONTRIBUTING.md)
 
-[![NuGet version](https://badge.fury.io/nu/grok.net.svg)](https://badge.fury.io/nu/grok.net)
+[![NuGet version](https://img.shields.io/nuget/v/grok.net.svg?logo=NuGet)](https://www.nuget.org/packages/grok.net)
 [![Nuget](https://img.shields.io/nuget/dt/grok.net.svg)](https://www.nuget.org/packages/Grok.Net)
 [![PowerShell Gallery Version](https://img.shields.io/powershellgallery/v/Grok)](https://www.powershellgallery.com/packages/Grok)
 [![PowerShell Gallery](https://img.shields.io/powershellgallery/dt/Grok)](https://www.powershellgallery.com/packages/Grok)
