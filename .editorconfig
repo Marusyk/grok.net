@@ -3,23 +3,36 @@
 # top-most EditorConfig file
 root = true
 
-# Default settings:
-# A newline ending every file
-# Use 4 spaces as indentation
+# default settings:
 [*]
-insert_final_newline = true
-indent_style         = space
-indent_size          = 4
 
-[*.csproj]
-indent_size          = 2
+# a newline ending every file
+insert_final_newline     = true
+indent_style             = space
+indent_size              = 4
+charset                  = utf-8
+trim_trailing_whitespace = true
 
+# xml files
+[*.{xml}]
+indent_size = 2
+
+# shell scripts
+[*.sh]
+end_of_line = lf
+
+[*.{cmd, bat, ps1}]
+end_of_line = crlf
 
 [*.yml]
 indent_size          = 2
 
+[*.csproj]
+indent_size          = 2
+
 # C# files
 [*.cs]
+indent_size = 4
 
 # New line preferences
 csharp_new_line_before_open_brace                     = all
@@ -157,17 +170,3 @@ csharp_space_between_method_declaration_name_and_open_parenthesis        = false
 csharp_space_between_method_declaration_parameter_list_parentheses       = false
 csharp_space_between_parentheses                                         = false
 csharp_space_between_square_brackets                                     = false
-
-# Xml project files
-[*.{csproj}]
-indent_size = 2
-
-# Xml files
-[*.{xml}]
-indent_size = 2
-
-# Shell scripts
-[*.sh]
-end_of_line = lf
-[*.{cmd, bat, ps1}]
-end_of_line = crlf

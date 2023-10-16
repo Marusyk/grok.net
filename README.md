@@ -1,6 +1,6 @@
 ![Grok](https://github.com/Marusyk/grok.net/raw/main/Grok.png)
 
-Cross platform .NET grok implementation as a NuGet package
+Cross-platform .NET grok implementation as a NuGet package
 
 [![Build](https://github.com/Marusyk/grok.net/actions/workflows/builds.yml/badge.svg?branch=main)](https://github.com/Marusyk/grok.net/actions/workflows/builds.yml)
 [![GitHub release)](https://img.shields.io/github/v/release/Marusyk/grok.net?logo=github)](https://github.com/Marusyk/grok.net/releases)
@@ -32,16 +32,20 @@ Install as a PowerShell module from [PowershellGallery](https://www.powershellga
 Install-Module -Name Grok
 ```
 
+# Dependency
+
+Since [v.2.0.0](https://github.com/Marusyk/grok.net/releases/tag/v2.0.0), the grok uses the [PCRE.NET](https://github.com/ltrzesniewski/pcre-net) library for regex.
+
 # What is grok
 
 Grok is a great way to parse unstructured log data into something structured and queryable. It sits on top of Regular Expression (regex) and uses text patterns to match lines in log files.
 
-A great way to get started with building yours grok filters is this grok debug tool: <https://grokdebug.herokuapp.com/>
+A great way to get started with building your grok filters is this grok debug tool: <https://grokdebug.herokuapp.com/>
 
 What can I use Grok for?
 
 - reporting errors and other patterns from logs and processes
-- parsing complex text output and converting it to json for external processing
+- parsing complex text output and converting it to JSON for external processing
 - apply 'write-once use-everywhere' to regular expressions
 - automatically providing patterns for unknown text inputs (logs you want patterns generated for future matching)
 
@@ -49,14 +53,14 @@ The syntax for a grok pattern is `%{SYNTAX:SEMANTIC}`
 
 The `SYNTAX` is the name of [the pattern](https://raw.githubusercontent.com/logstash-plugins/logstash-patterns-core/main/patterns/grok-patterns) that will match your text. `SEMANTIC` is the key.
 
-For example, `3.44` will be matched by the `NUMBER` pattern and `55.3.244.1` will be matched by the `IP` pattern. `3.44` could be the duration of an event, so you could call it simply `duration`. Further, a string `55.3.244.1` might identify the `client` making a request.
+For example, `3.44` will be matched by the `NUMBER` pattern, and `55.3.244.1` will be matched by the `IP` pattern. `3.44` could be the duration of an event, so you could call it simply `duration`. Further, a string `55.3.244.1` might identify the `client` making a request.
 For the above example, your grok filter would look something like this:
 
 ```text
 %{NUMBER:duration} %{IP:client}
 ```
 
-Examples: With that idea of a syntax and semantic, we can pull out useful fields from a sample log like this fictional http request log:
+Examples: With that idea of syntax and semantics, we can pull out useful fields from a sample log like this fictional HTTP request log:
 
 ```text
 55.3.244.1 GET /index.html 15824 0.043
@@ -85,7 +89,7 @@ string logs = @"06-21-19 21:00:13:589241;15;INFO;main;DECODED: 775233900043 DECO
                 06-22-19 22:00:13:589265;156;WARN;main;DECODED: 775233900043 EMPTY DISTANCE: --------";
 ```
 
-You are ready to parse and print result
+You are ready to parse and print the result
 
 ```csharp
 var grokResult = grok.Parse(logs);
@@ -123,7 +127,7 @@ There is the possibility to add your own patterns.
 
 ## using file
 
-Create a file and write the pattern you need as the pattern name, space, then the regexp for that pattern.
+Create a file and write the pattern you need as the pattern name, space, and then the regexp for that pattern.
 
 For example, Patterns\grok-custom-patterns:
 
