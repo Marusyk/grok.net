@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using GrokNet;
 using PCRE;
 using Xunit;
@@ -394,6 +395,34 @@ namespace GrokNetTests
             Assert.Equal(3, grokResult["comment"].Count());
             Assert.True(grokResult.ContainsKey("email"));
             Assert.True(grokResult.ContainsKey("comment"));
+        }
+
+        [Fact]
+        public void InvalidPattern_ThrowsException()
+        {
+            // Arrange            
+            const string logs = @"06-21-19 21:00:13:589241;15;INFO;main;DECODED: 775233900043 DECODED BY: 18500738 DISTANCE: 1.5165
+            06-22-19 22:00:13:589265;156;WARN;main;DECODED: 775233900043 EMPTY DISTANCE: --------";
+
+            var sut = new Grok("%{MONTHDA:month}-%{MONTHDAY:day}-%{MONTHDAY:year} %{TIME:timestamp};%{WORD:id};%{LOGLEVEL:loglevel};%{WORD:func};%{GREEDYDATA:msg}");
+
+            // Act & Assert
+            FormatException exception = Assert.Throws<FormatException>(() => sut.Parse(logs));
+            Assert.Contains("Invalid Grok pattern: Pattern 'MONTHDA' not found.", exception.Message);
+        }
+
+        [Fact]
+        public void InvaidPattern_With_Custom_Patterns()
+        {
+            // Arrange
+            const string zipcode = "122001";
+            const string email = "Bob.Davis@microsoft.com";
+
+            var sut = new Grok("%{ZIPCOD:zipcode}:%{EMAILADDRESS:email}", ReadCustomFile());            
+
+            // Act & Assert
+            FormatException exception = Assert.Throws<FormatException>(() => sut.Parse($"{zipcode}:{email}"));
+            Assert.Contains("Invalid Grok pattern: Pattern 'ZIPCOD' not found.", exception.Message);
         }
     }
 }

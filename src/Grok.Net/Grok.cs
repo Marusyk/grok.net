@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using PCRE;
 
 namespace GrokNet
@@ -104,6 +105,7 @@ namespace GrokNet
         {
             if (_compiledRegex == null)
             {
+                ValidateGrokPattern(_grokPattern);
                 ParsePattern();
             }
 
@@ -285,6 +287,21 @@ namespace GrokNet
             }
 
             return "()";
+        }
+
+        private void ValidateGrokPattern(string grokPattern)
+        {
+            var grokPatternRegex = new Regex("%\\{([^:}]+)(?::[^}]+)?(?::[^}]+)?\\}");
+            MatchCollection matches = grokPatternRegex.Matches(grokPattern);
+
+            foreach (Match match in matches.Cast<Match>())
+            {
+                var patternName = match.Groups[1].Value;
+                if (!_patterns.ContainsKey(patternName))
+                {
+                    throw new FormatException($"Invalid Grok pattern: Pattern '{patternName}' not found.");
+                }
+            }
         }
     }
 }
