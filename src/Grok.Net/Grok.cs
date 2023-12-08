@@ -1,10 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Text.RegularExpressions;
 using PCRE;
 
 namespace GrokNet
@@ -291,10 +290,10 @@ namespace GrokNet
 
         private void ValidateGrokPattern(string grokPattern)
         {
-            var grokPatternRegex = new Regex("%\\{([^:}]+)(?::[^}]+)?(?::[^}]+)?\\}");
-            MatchCollection matches = grokPatternRegex.Matches(grokPattern);
+            var grokPatternRegex = new PcreRegex("%\\{([^:}]+)(?::[^}]+)?(?::[^}]+)?\\}");
+            IEnumerable<PcreMatch> matches = grokPatternRegex.Matches(grokPattern);
 
-            foreach (Match match in matches.Cast<Match>())
+            foreach (PcreMatch match in matches)
             {
                 var patternName = match.Groups[1].Value;
                 if (!_patterns.ContainsKey(patternName))
