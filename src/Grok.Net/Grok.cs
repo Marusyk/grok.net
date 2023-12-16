@@ -291,7 +291,7 @@ namespace GrokNet
         private void ValidateGrokPattern(string grokPattern)
         {
             var grokPatternRegex = new PcreRegex("%\\{([^:}]+)(?::[^}]+)?(?::[^}]+)?\\}");
-            IEnumerable<PcreMatch> matches = grokPatternRegex.Matches(grokPattern);
+            IEnumerable<PcreMatch> matches = grokPatternRegex.Matches(_grokPattern);
 
             foreach (PcreMatch match in matches)
             {
