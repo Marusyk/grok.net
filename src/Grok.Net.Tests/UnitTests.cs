@@ -418,7 +418,7 @@ namespace GrokNetTests
             const string zipcode = "122001";
             const string email = "Bob.Davis@microsoft.com";
 
-            var sut = new Grok("%{ZIPCOD:zipcode}:%{EMAILADDRESS:email}", ReadCustomFile());            
+            var sut = new Grok("%{ZIPCOD:zipcode}:%{EMAILADDRESS:email}", ReadCustomFile());
 
             // Act & Assert
             FormatException exception = Assert.Throws<FormatException>(() => sut.Parse($"{zipcode}:{email}"));
