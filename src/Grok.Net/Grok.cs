@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -104,6 +104,7 @@ namespace GrokNet
         {
             if (_compiledRegex == null)
             {
+                ValidateGrokPattern();
                 ParsePattern();
             }
 
@@ -285,6 +286,21 @@ namespace GrokNet
             }
 
             return "()";
+        }
+
+        private void ValidateGrokPattern()
+        {
+            var grokPatternRegex = new PcreRegex("%\\{([^:}]+)(?::[^}]+)?(?::[^}]+)?\\}");
+            IEnumerable<PcreMatch> matches = grokPatternRegex.Matches(_grokPattern);
+
+            foreach (PcreMatch match in matches)
+            {
+                var patternName = match.Groups[1].Value;
+                if (!_patterns.ContainsKey(patternName))
+                {
+                    throw new FormatException($"Invalid Grok pattern: Pattern '{patternName}' not found.");
+                }
+            }
         }
     }
 }
