@@ -400,7 +400,7 @@ namespace GrokNetTests
         [Fact]
         public void InvalidPattern_ThrowsException()
         {
-            // Arrange            
+            // Arrange
             const string logs = @"06-21-19 21:00:13:589241;15;INFO;main;DECODED: 775233900043 DECODED BY: 18500738 DISTANCE: 1.5165
             06-22-19 22:00:13:589265;156;WARN;main;DECODED: 775233900043 EMPTY DISTANCE: --------";
 
