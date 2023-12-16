@@ -104,7 +104,7 @@ namespace GrokNet
         {
             if (_compiledRegex == null)
             {
-                ValidateGrokPattern(_grokPattern);
+                ValidateGrokPattern();
                 ParsePattern();
             }
 
