@@ -51,7 +51,7 @@ What can I use Grok for?
 
 The syntax for a grok pattern is `%{SYNTAX:SEMANTIC}`
 
-The `SYNTAX` is the name of [the pattern](https://raw.githubusercontent.com/logstash-plugins/logstash-patterns-core/main/patterns/grok-patterns) that will match your text. `SEMANTIC` is the key.
+The `SYNTAX` is the name of [the pattern](https://github.com/logstash-plugins/logstash-patterns-core/blob/main/patterns/ecs-v1/grok-patterns) that will match your text. `SEMANTIC` is the key.
 
 For example, `3.44` will be matched by the `NUMBER` pattern, and `55.3.244.1` will be matched by the `IP` pattern. `3.44` could be the duration of an event, so you could call it simply `duration`. Further, a string `55.3.244.1` might identify the `client` making a request.
 For the above example, your grok filter would look something like this:
