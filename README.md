@@ -40,7 +40,7 @@ Since [v.2.0.0](https://github.com/Marusyk/grok.net/releases/tag/v2.0.0), the gr
 
 Grok is a great way to parse unstructured log data into something structured and queryable. It sits on top of Regular Expression (regex) and uses text patterns to match lines in log files.
 
-A great way to get started with building your grok filters is this grok debug tool: <https://grokdebug.herokuapp.com/>
+A great way to get started with building your grok filters is this grok debug tool: https://grokdebugger.com
 
 What can I use Grok for?
 
