@@ -12,7 +12,7 @@ var nugetApiKey = EnvironmentVariable("NUGET_API_KEY");
 var nugetApiUrl = EnvironmentVariable("NUGET_API_URL");
 var psNugetApiKey = EnvironmentVariable("PS_NUGET_API_KEY");
 
-DirectoryPath artifactsDir = Directory("./artifacts/");
+var artifactsDir = Directory("./artifacts/");
 var testResultsDir = artifactsDir.Combine("test-results");
 var psModuleDir = artifactsDir.Combine("Grok");
 var testCoverageOutputFilePath = testResultsDir.CombineWithFilePath("OpenCover.xml");
@@ -20,6 +20,12 @@ var testCoverageOutputFilePath = testResultsDir.CombineWithFilePath("OpenCover.x
 var projectFileMain = File("./src/Grok.Net/Grok.Net.csproj");
 var projectFilePowerShell = File("./src/Grok.Net.PowerShell/Grok.Net.PowerShell.csproj");
 
+var commonSettings = new DotNetBuildSettings
+{
+    Configuration = configuration,
+    NoRestore = true,
+    NoLogo = true
+};
 
 Task("Clean")
     .Does(() =>
@@ -40,27 +46,21 @@ Task("Build")
     .IsDependentOn("Restore")
     .Does(() =>
 {
-    var settings = new DotNetBuildSettings
-    { 
-        Configuration = configuration,
-        NoRestore = true,
-        NoLogo = true
-    };
-    DotNetBuild(projectFileMain, settings);
-    DotNetBuild(projectFilePowerShell, settings);
+    DotNetBuild(projectFileMain, commonSettings);
+    DotNetBuild(projectFilePowerShell, commonSettings);
 });
 
 Task("Test")
     .IsDependentOn("Build")
     .Does(() =>
 {
-    var settings = new DotNetTestSettings
+    var testSettings = new DotNetTestSettings
     {
         Configuration = configuration,
         NoLogo = true
     };
 
-    DotNetTest("./src/Grok.Net.Tests/Grok.Net.Tests.csproj", settings, new CoverletSettings
+    DotNetTest("./src/Grok.Net.Tests/Grok.Net.Tests.csproj", testSettings, new CoverletSettings
     {
         CollectCoverage = true,
         CoverletOutputFormat = CoverletOutputFormat.opencover,
@@ -71,10 +71,10 @@ Task("Test")
 
 Task("UploadTestReport")
     .IsDependentOn("Test")
-    .WithCriteria((context) => FileExists(testCoverageOutputFilePath))
-    .WithCriteria(!string.IsNullOrWhiteSpace(coverallsRepoToken))
-    .WithCriteria((context) => !BuildSystem.IsPullRequest)
-    .WithCriteria((context) => !BuildSystem.IsLocalBuild)
+    .WithCriteria(context => FileExists(testCoverageOutputFilePath) &&
+                             !string.IsNullOrWhiteSpace(coverallsRepoToken) &&
+                             !BuildSystem.IsPullRequest &&
+                             !BuildSystem.IsLocalBuild)
     .Does(() =>
 {
     CoverallsIo(testCoverageOutputFilePath, new CoverallsIoSettings
@@ -100,11 +100,10 @@ Task("NuGetPack")
 
 Task("NuGetPush")
     .IsDependentOn("NuGetPack")
-    .WithCriteria(!string.IsNullOrWhiteSpace(nugetApiUrl))
-    .WithCriteria(!string.IsNullOrWhiteSpace(nugetApiKey))
+    .WithCriteria(context => !string.IsNullOrWhiteSpace(nugetApiUrl) && !string.IsNullOrWhiteSpace(nugetApiKey))
     .Does(() =>
 {
-    var packages = GetFiles(string.Concat(artifactsDir, "/", "*.nupkg"));
+    var packages = GetFiles($"{artifactsDir.FullPath}/*.nupkg");
     DotNetNuGetPush(packages.First(), new DotNetNuGetPushSettings
     {
         Source = nugetApiUrl,
@@ -128,7 +127,7 @@ Task("PsModulePack")
 
 Task("PsModulePush")
     .IsDependentOn("PsModulePack")
-    .WithCriteria(!string.IsNullOrWhiteSpace(psNugetApiKey))
+    .WithCriteria(context => !string.IsNullOrWhiteSpace(psNugetApiKey))
     .Does(() =>
 {
     StartPowershellScript("Publish-Module", new PowershellSettings()
