@@ -1,5 +1,7 @@
 ![Grok](https://github.com/Marusyk/grok.net/raw/main/Grok.png)
 
+[![Stand With Ukraine](https://img.shields.io/badge/made_in-ukraine-ffd700.svg?labelColor=0057b7)](https://stand-with-ukraine.pp.ua)
+
 Cross-platform .NET grok implementation as a NuGet package
 
 [![Build](https://github.com/Marusyk/grok.net/actions/workflows/builds.yml/badge.svg?branch=main)](https://github.com/Marusyk/grok.net/actions/workflows/builds.yml)
