@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -179,11 +180,11 @@ namespace GrokNet
                 switch (lowerInvariant)
                 {
                     case "int":
-                        return Convert.ToInt32(data);
+                        return int.Parse(data, NumberStyles.Integer, CultureInfo.InvariantCulture);
                     case "float":
-                        return Convert.ToDouble(data);
+                        return double.Parse(data, NumberStyles.Float, CultureInfo.InvariantCulture);
                     case "datetime":
-                        return DateTime.Parse(data);
+                        return DateTime.Parse(data, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
                 }
             }
             catch (Exception)
