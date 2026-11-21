@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -243,7 +244,7 @@ namespace GrokNetTests
             var sut = new Grok("%{INT:int_value:int}:%{DATESTAMP:date_time:datetime}:%{FLOAT:float_value:float}", ReadCustomFile());
 
             // Act
-            GrokResult grokResult = sut.Parse($"{intValue}:{dateTime:dd-MM-yyyy HH:mm:ss}:{floatValue}");
+            GrokResult grokResult = sut.Parse(FormattableString.Invariant($"{intValue}:{dateTime:dd-MM-yyyy HH:mm:ss}:{floatValue}"));
 
             // Assert
             Assert.Equal("int_value", grokResult[0].Key);
@@ -257,6 +258,33 @@ namespace GrokNetTests
             Assert.Equal("float_value", grokResult[2].Key);
             Assert.Equal(floatValue, grokResult[2].Value);
             Assert.IsType<double>(grokResult[2].Value); // Float converts to double actually
+        }
+
+        [Theory]
+        [InlineData("en-US")]
+        [InlineData("da-DK")]
+        [InlineData("uk-UA")]
+        public void Parse_With_Type_Should_Not_Depend_On_Current_Culture(string culture)
+        {
+            // Arrange
+            CultureInfo currentCulture = CultureInfo.CurrentCulture;
+            CultureInfo.CurrentCulture = new CultureInfo(culture);
+            try
+            {
+                var sut = new Grok("%{INT:int_value:int} %{NUMBER:float_value:float} %{TIMESTAMP_ISO8601:date_time:datetime}");
+
+                // Act
+                GrokResult grokResult = sut.Parse("-28 3.14 2021-11-30T02:08:58");
+
+                // Assert
+                Assert.Equal(-28, grokResult[0].Value);
+                Assert.Equal(3.14, grokResult[1].Value);
+                Assert.Equal(new DateTime(2021, 11, 30, 2, 8, 58), grokResult[2].Value);
+            }
+            finally
+            {
+                CultureInfo.CurrentCulture = currentCulture;
+            }
         }
 
         [Theory]
