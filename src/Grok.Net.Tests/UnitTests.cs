@@ -452,5 +452,106 @@ namespace GrokNetTests
             FormatException exception = Assert.Throws<FormatException>(() => sut.Parse($"{zipcode}:{email}"));
             Assert.Contains("Invalid Grok pattern: Pattern 'ZIPCOD' not found.", exception.Message);
         }
+
+        [Fact]
+        public void Missing_Nested_Pattern_Throws_FormatException()
+        {
+            // Arrange
+            var customPatterns = new Dictionary<string, string>
+            {
+                { "FOO", "%{INTT}" }
+            };
+            var sut = new Grok("%{FOO:x}", customPatterns);
+
+            // Act & Assert
+            FormatException exception = Assert.Throws<FormatException>(() => sut.Parse("abc"));
+            Assert.Contains("INTT", exception.Message);
+            Assert.Contains("FOO -> INTT", exception.Message);
+        }
+
+        [Fact]
+        public void Missing_Nested_Named_Pattern_Throws_FormatException()
+        {
+            // Arrange
+            var customPatterns = new Dictionary<string, string>
+            {
+                { "FOO", "%{INTT:y}" }
+            };
+            var sut = new Grok("%{FOO:x}", customPatterns);
+
+            // Act & Assert
+            FormatException exception = Assert.Throws<FormatException>(() => sut.Parse("abc"));
+            Assert.Contains("INTT", exception.Message);
+            Assert.Contains("FOO -> INTT", exception.Message);
+        }
+
+        [Fact]
+        public void Missing_Deeply_Nested_Pattern_Includes_Full_Expansion_Path()
+        {
+            // Arrange
+            var customPatterns = new Dictionary<string, string>
+            {
+                { "FOO", "%{BAR:b}" },
+                { "BAR", "%{INTT}" }
+            };
+            var sut = new Grok("%{FOO}", customPatterns);
+
+            // Act & Assert
+            FormatException exception = Assert.Throws<FormatException>(() => sut.Parse("abc"));
+            Assert.Contains("FOO -> BAR -> INTT", exception.Message);
+        }
+
+        [Fact]
+        public void Missing_Nested_Pattern_After_Valid_Sibling_Reports_Only_Failing_Path()
+        {
+            // Arrange
+            var customPatterns = new Dictionary<string, string>
+            {
+                { "GOOD", "%{INT}" },
+                { "BAD", "%{INTT}" }
+            };
+            var sut = new Grok("%{GOOD:a} %{BAD:b}", customPatterns);
+
+            // Act & Assert
+            FormatException exception = Assert.Throws<FormatException>(() => sut.Parse("123 abc"));
+            Assert.Contains("BAD -> INTT", exception.Message);
+            Assert.DoesNotContain("GOOD", exception.Message);
+        }
+
+        [Fact]
+        public void Unused_Custom_Pattern_With_Missing_Reference_Does_Not_Throw()
+        {
+            // Arrange
+            var customPatterns = new Dictionary<string, string>
+            {
+                { "UNUSED", "%{INTT}" },
+                { "USED", "%{INT}" }
+            };
+            var sut = new Grok("%{USED:num:int}", customPatterns);
+
+            // Act
+            GrokResult result = sut.Parse("42");
+
+            // Assert
+            Assert.Single(result);
+            Assert.Equal("num", result[0].Key);
+            Assert.Equal(42, result[0].Value);
+        }
+
+        [Fact]
+        public void Missing_Nested_Typed_Pattern_Throws_FormatException()
+        {
+            // Arrange
+            var customPatterns = new Dictionary<string, string>
+            {
+                { "FOO", "%{INTT:y:int}" }
+            };
+            var sut = new Grok("%{FOO:x}", customPatterns);
+
+            // Act & Assert
+            FormatException exception = Assert.Throws<FormatException>(() => sut.Parse("abc"));
+            Assert.Contains("INTT", exception.Message);
+            Assert.Contains("FOO -> INTT", exception.Message);
+        }
     }
 }

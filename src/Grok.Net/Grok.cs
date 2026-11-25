@@ -19,9 +19,8 @@ namespace GrokNet
         private const PcreOptions _defaultRegexOptions = PcreOptions.Compiled | PcreOptions.ExplicitCapture;
         private readonly PcreOptions _regexOptions;
 
-        private static readonly PcreRegex _grokRegex = new PcreRegex("%{(\\w+):(\\w+)(?::\\w+)?}", PcreOptions.Compiled);
+        private static readonly PcreRegex _grokRegex = new PcreRegex("%{(\\w+)(?::(\\w+)(?::\\w+)?)?}", PcreOptions.Compiled);
         private static readonly PcreRegex _grokRegexWithType = new PcreRegex("%{(\\w+):(\\w+):(\\w+)?}", PcreOptions.Compiled);
-        private static readonly PcreRegex _grokWithoutName = new PcreRegex("%{(\\w+)}", PcreOptions.Compiled);
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="Grok"/> class with the specified Grok pattern.
@@ -140,32 +139,58 @@ namespace GrokNet
 
         private void ParsePattern()
         {
-            string pattern = string.Empty;
-            bool done;
-
-            do
-            {
-                done = false;
-
-                ProcessTypeMappings(ref pattern);
-
-                string newPattern = _grokWithoutName.Replace(_grokRegex.Replace(string.IsNullOrEmpty(pattern) ? _grokPattern : pattern, ReplaceWithName), ReplaceWithoutName);
-
-                if (newPattern.Equals(pattern, StringComparison.CurrentCultureIgnoreCase))
-                {
-                    done = true;
-                }
-
-                pattern = newPattern;
-            } while (!done);
+            _typeMaps.Clear();
+            string pattern = ExpandPattern(_grokPattern, new List<string>());
 
             _compiledRegex = new PcreRegex(pattern, _regexOptions);
             _patternGroupNames = _compiledRegex.PatternInfo.GroupNames.ToList();
         }
 
-        private void ProcessTypeMappings(ref string pattern)
+        private string ExpandPattern(string pattern, List<string> expansionPath)
         {
-            IEnumerable<PcreMatch> matches = _grokRegexWithType.Matches(string.IsNullOrEmpty(pattern) ? _grokPattern : pattern);
+            ProcessTypeMappings(pattern);
+
+            return _grokRegex.Replace(pattern, match => ExpandMatch(match, expansionPath));
+        }
+
+        private string ExpandMatch(PcreMatch match, List<string> expansionPath)
+        {
+            string patternName = match.Groups[1].Value;
+
+            if (!_patterns.TryGetValue(patternName, out string rawPattern))
+            {
+                throw CreateMissingPatternException(patternName, expansionPath);
+            }
+
+            expansionPath.Add(patternName);
+            string expanded;
+            try
+            {
+                expanded = ExpandPattern(rawPattern, expansionPath);
+            }
+            finally
+            {
+                expansionPath.RemoveAt(expansionPath.Count - 1);
+            }
+
+            PcreGroup nameGroup = match.Groups[2];
+            return nameGroup.Success ? $"(?<{nameGroup.Value}>{expanded})" : $"({expanded})";
+        }
+
+        private static FormatException CreateMissingPatternException(string patternName, List<string> expansionPath)
+        {
+            if (expansionPath.Count == 0)
+            {
+                return new FormatException($"Invalid Grok pattern: Pattern '{patternName}' not found.");
+            }
+
+            string path = string.Join(" -> ", expansionPath) + " -> " + patternName;
+            return new FormatException($"Invalid Grok pattern: Pattern '{patternName}' not found (expansion path: {path}).");
+        }
+
+        private void ProcessTypeMappings(string pattern)
+        {
+            IEnumerable<PcreMatch> matches = _grokRegexWithType.Matches(pattern);
             foreach (PcreMatch match in matches)
             {
                 _typeMaps.Add(match.Groups[2].Value, match.Groups[3].Value);
@@ -266,27 +291,6 @@ namespace GrokNet
             {
                 throw new FormatException($"Invalid regular expression {pattern}", e);
             }
-        }
-
-        private string ReplaceWithName(PcreMatch match)
-        {
-            PcreGroup group1 = match.Groups[2];
-            PcreGroup group2 = match.Groups[1];
-
-            return _patterns.TryGetValue(group2.Value, out var str) ? $"(?<{group1}>{str})" : $"(?<{group1}>)";
-        }
-
-        private string ReplaceWithoutName(PcreMatch match)
-        {
-            PcreGroup group = match.Groups[1];
-
-            if (_patterns.TryGetValue(group.Value, out _))
-            {
-                string str = _patterns[group.Value];
-                return $"({str})";
-            }
-
-            return "()";
         }
 
         private void ValidateGrokPattern()
